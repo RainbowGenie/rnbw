@@ -62,12 +62,12 @@ export default function WorkspaceTreeView() {
     filesReferenceData,
     currentProjectFileHandle,
     recentProjectNames,
+    recentProjectHandlers,
   } = useAppState();
   const {
     addRunningActions,
     removeRunningActions,
     invalidFileNodes,
-    recentProjectHandlers,
     recentProjectContexts,
     importProject,
   } = useContext(MainContext);

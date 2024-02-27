@@ -61,15 +61,14 @@ export default function MainPage() {
     cmdkSearchContent,
     htmlReferenceData,
     cmdkReferenceData,
+    recentProjectHandlers,
   } = useAppState();
 
   // get,set
   const { addRunningActions, removeRunningActions } = useRunningActions();
   const {
     recentProjectContexts,
-    recentProjectHandlers,
     setRecentProjectContexts,
-    setRecentProjectHandlers,
   } = useRecentProjects();
 
   const {
@@ -96,9 +95,7 @@ export default function MainPage() {
     addRunningActions,
     removeRunningActions,
     recentProjectContexts,
-    recentProjectHandlers,
     setRecentProjectContexts,
-    setRecentProjectHandlers,
     htmlReferenceData,
   });
   const {
@@ -108,9 +105,7 @@ export default function MainPage() {
     triggerCurrentProjectReload,
   } = useHandlers({
     recentProjectContexts,
-    recentProjectHandlers,
     setRecentProjectContexts,
-    setRecentProjectHandlers,
   });
   const { onJumpstart, onNew, onClear, onUndo, onRedo } = useCmdk({
     cmdkReferenceData,
@@ -220,7 +215,6 @@ export default function MainPage() {
           addRunningActions,
           removeRunningActions,
 
-          recentProjectHandlers,
           recentProjectContexts,
 
           monacoEditorRef,

@@ -29,18 +29,17 @@ import {
 } from "../helper";
 import { useDispatch } from "react-redux";
 import { setCmdkReferenceData } from "@_redux/main/cmdk";
-import { setRecentProjectNames } from "@_redux/main/project";
+import {
+  setRecentProjectHandlers,
+  setRecentProjectNames,
+} from "@_redux/main/project";
 
 interface IUseCmdkReferenceData {
   addRunningActions: (actionNames: string[]) => void;
   removeRunningActions: (actionNames: string[]) => void;
   recentProjectContexts: TProjectContext[];
-  recentProjectHandlers: (FileSystemDirectoryHandle | null)[];
   setRecentProjectContexts: React.Dispatch<
     React.SetStateAction<TProjectContext[]>
-  >;
-  setRecentProjectHandlers: React.Dispatch<
-    React.SetStateAction<(FileSystemDirectoryHandle | null)[]>
   >;
   htmlReferenceData: THtmlReferenceData;
 }
@@ -48,9 +47,7 @@ export const useCmdkReferenceData = ({
   addRunningActions,
   removeRunningActions,
   recentProjectContexts,
-  recentProjectHandlers,
   setRecentProjectContexts,
-  setRecentProjectHandlers,
   htmlReferenceData,
 }: IUseCmdkReferenceData) => {
   const dispatch = useDispatch();
@@ -61,6 +58,7 @@ export const useCmdkReferenceData = ({
     nFocusedItem,
     cmdkSearchContent,
     recentProjectNames,
+    recentProjectHandlers,
   } = useAppState();
 
   const [cmdkReferenceJumpstart, setCmdkReferenceJumpstart] =
@@ -113,7 +111,9 @@ export const useCmdkReferenceData = ({
                 dispatch(
                   setRecentProjectNames(_session["recent-project-name"]),
                 );
-                setRecentProjectHandlers(_session["recent-project-handler"]);
+                dispatch(
+                  setRecentProjectHandlers(_session["recent-project-handler"]),
+                );
 
                 for (
                   let index = 0;

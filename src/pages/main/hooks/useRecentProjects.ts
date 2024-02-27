@@ -6,14 +6,9 @@ export const useRecentProjects = () => {
   const [recentProjectContexts, setRecentProjectContexts] = useState<
     TProjectContext[]
   >([]);
-  const [recentProjectHandlers, setRecentProjectHandlers] = useState<
-    (FileSystemDirectoryHandle | null)[]
-  >([]);
 
   return {
     recentProjectContexts,
-    recentProjectHandlers,
     setRecentProjectContexts,
-    setRecentProjectHandlers,
   };
 };

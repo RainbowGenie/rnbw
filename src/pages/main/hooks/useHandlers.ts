@@ -40,24 +40,19 @@ import { clearProjectSession } from "../helper";
 import {
   setCurrentProjectFileHandle,
   setFileHandlers,
+  setRecentProjectHandlers,
   setRecentProjectNames,
 } from "@_redux/main/project";
 
 interface IUseHandlers {
   recentProjectContexts: TProjectContext[];
-  recentProjectHandlers: (FileSystemDirectoryHandle | null)[];
   setRecentProjectContexts: React.Dispatch<
     React.SetStateAction<TProjectContext[]>
-  >;
-  setRecentProjectHandlers: React.Dispatch<
-    React.SetStateAction<(FileSystemDirectoryHandle | null)[]>
   >;
 }
 export const useHandlers = ({
   recentProjectContexts,
-  recentProjectHandlers,
   setRecentProjectContexts,
-  setRecentProjectHandlers,
 }: IUseHandlers) => {
   const { currentProjectFileHandle } = useAppState();
   const dispatch = useDispatch();
@@ -70,6 +65,7 @@ export const useHandlers = ({
     currentFileUid,
     webComponentOpen,
     recentProjectNames,
+    recentProjectHandlers,
   } = useAppState();
 
   const { "*": rest } = useParams();
@@ -107,7 +103,7 @@ export const useHandlers = ({
       );
       setRecentProjectContexts(_recentProjectContexts);
       dispatch(setRecentProjectNames(_recentProjectNames));
-      setRecentProjectHandlers(_recentProjectHandlers);
+      dispatch(setRecentProjectHandlers(_recentProjectHandlers));
       await setMany([
         ["recent-project-context", _recentProjectContexts],
         ["recent-project-name", _recentProjectNames],
