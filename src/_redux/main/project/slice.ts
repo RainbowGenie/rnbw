@@ -4,6 +4,7 @@ import { TFileHandlerCollection, TProjectReducerState } from "./types";
 const projectReducerInitialState: TProjectReducerState = {
   projectHandlers: {},
   currentProjectFileHandle: null,
+  fileHandlers: {},
 };
 const projectSlice = createSlice({
   name: "project",
@@ -20,8 +21,15 @@ const projectSlice = createSlice({
       const currentProjectFileHandle = action.payload;
       state.currentProjectFileHandle = currentProjectFileHandle;
     },
+    setFileHandlers(state, action: PayloadAction<TFileHandlerCollection>) {
+      const fileHandlers = action.payload;
+      state.fileHandlers = fileHandlers;
+    },
   },
 });
-export const { setProjectHandlers, setCurrentProjectFileHandle } =
-  projectSlice.actions;
+export const {
+  setProjectHandlers,
+  setCurrentProjectFileHandle,
+  setFileHandlers,
+} = projectSlice.actions;
 export const ProjectReducer = projectSlice.reducer;

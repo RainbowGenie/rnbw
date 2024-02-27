@@ -37,10 +37,12 @@ import {
 import { useAppState } from "@_redux/useAppState";
 
 import { clearProjectSession } from "../helper";
-import { setCurrentProjectFileHandle } from "@_redux/main/project";
+import {
+  setCurrentProjectFileHandle,
+  setFileHandlers,
+} from "@_redux/main/project";
 
 interface IUseHandlers {
-  setFileHandlers: React.Dispatch<React.SetStateAction<TFileHandlerCollection>>;
   recentProjectContexts: TProjectContext[];
   recentProjectNames: string[];
   recentProjectHandlers: (FileSystemDirectoryHandle | null)[];
@@ -53,7 +55,6 @@ interface IUseHandlers {
   >;
 }
 export const useHandlers = ({
-  setFileHandlers,
   recentProjectContexts,
   recentProjectNames,
   recentProjectHandlers,
@@ -158,7 +159,7 @@ export const useHandlers = ({
 
           dispatch(setFileTree(_fileTree));
           dispatch(setInitialFileUidToOpen(_initialFileUidToOpen));
-          setFileHandlers(_fileHandlers);
+          dispatch(setFileHandlers(_fileHandlers));
 
           await saveRecentProject(
             fsType,
@@ -195,7 +196,7 @@ export const useHandlers = ({
 
           dispatch(setFileTree(_fileTree));
           dispatch(setInitialFileUidToOpen(_initialFileUidToOpen));
-          setFileHandlers({});
+          dispatch(setFileHandlers({}));
 
           // await saveRecentProject(fsType, null);
         } catch (err) {
@@ -236,7 +237,7 @@ export const useHandlers = ({
         fileTree,
       );
       dispatch(setFileTree(_fileTree));
-      setFileHandlers(_fileHandlers);
+      dispatch(setFileHandlers(_fileHandlers));
       // need to open another file if the current open file is deleted
       if (deletedUidsObj[currentFileUid] || !currentFileUid) {
         if (!!_initialFileUidToOpen) {

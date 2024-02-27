@@ -67,10 +67,6 @@ export default function MainPage() {
   // get,set
   const { addRunningActions, removeRunningActions } = useRunningActions();
   const {
-    fileHandlers,
-    setFileHandlers,
-  } = useFileHandlers();
-  const {
     recentProjectContexts,
     recentProjectNames,
     recentProjectHandlers,
@@ -116,7 +112,6 @@ export default function MainPage() {
     reloadCurrentProject,
     triggerCurrentProjectReload,
   } = useHandlers({
-    setFileHandlers,
     recentProjectContexts,
     recentProjectNames,
     recentProjectHandlers,
@@ -231,9 +226,6 @@ export default function MainPage() {
         value={{
           addRunningActions,
           removeRunningActions,
-
-          fileHandlers,
-          setFileHandlers,
 
           recentProjectNames,
           recentProjectHandlers,

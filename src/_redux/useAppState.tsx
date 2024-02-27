@@ -80,6 +80,7 @@ export const useAppState = () => {
       project: {
         projectHandlers,
         currentProjectFileHandle,
+        fileHandlers,
       },
       cmdk: {
         cmdkOpen,
@@ -181,6 +182,7 @@ export const useAppState = () => {
 
     projectHandlers,
     currentProjectFileHandle,
+    fileHandlers,
 
     cmdkOpen,
     cmdkPages,

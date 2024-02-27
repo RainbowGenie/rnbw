@@ -32,9 +32,9 @@ export const useFileTreeEvent = () => {
     fileEventPastLength,
     didUndo,
     didRedo,
+    fileHandlers,
   } = useAppState();
   const {
-    fileHandlers,
     addInvalidFileNodes,
     removeInvalidFileNodes,
     triggerCurrentProjectReload,

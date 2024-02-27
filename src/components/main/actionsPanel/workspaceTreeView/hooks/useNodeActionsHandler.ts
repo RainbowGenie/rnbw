@@ -52,11 +52,11 @@ export const useNodeActionsHandler = () => {
     clipboardData,
     webComponentOpen,
     htmlReferenceData,
+    fileHandlers,
   } = useAppState();
   const {
     addRunningActions,
     removeRunningActions,
-    fileHandlers,
     invalidFileNodes,
     addInvalidFileNodes,
     removeInvalidFileNodes,
