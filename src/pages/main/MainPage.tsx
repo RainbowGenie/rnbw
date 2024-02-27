@@ -61,6 +61,7 @@ export default function MainPage() {
     currentCmdkPage,
     cmdkSearchContent,
     htmlReferenceData,
+    cmdkReferenceData,
   } = useAppState();
 
   // get,set
@@ -97,7 +98,6 @@ export default function MainPage() {
 
   // hooks
   const {
-    cmdkReferenceData,
     cmdkReferenceJumpstart,
     cmdkReferenceActions,
     cmdkReferneceRecentProject,
@@ -237,8 +237,6 @@ export default function MainPage() {
         value={{
           addRunningActions,
           removeRunningActions,
-
-          cmdkReferenceData,
 
           projectHandlers,
           setProjectHandlers,

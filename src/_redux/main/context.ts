@@ -6,8 +6,6 @@ export const MainContext: Context<TMainContext> = createContext<TMainContext>({
   addRunningActions: () => {},
   removeRunningActions: () => {},
 
-  cmdkReferenceData: {},
-
   projectHandlers: {},
   setProjectHandlers: () => {},
   currentProjectFileHandle: null,

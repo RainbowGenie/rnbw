@@ -4,7 +4,6 @@ import { editor } from "monaco-editor";
 
 import { TFileHandlerCollection } from "@_node/file";
 import { TNodeUid } from "@_node/types";
-import { TCmdkReferenceData } from "@_types/main";
 
 import { TFileAction, TProjectContext } from "./fileTree";
 
@@ -32,8 +31,6 @@ export type TUpdateTreeViewStatePayload = {
 export type TMainContext = {
   addRunningActions: (actionNames: string[]) => void;
   removeRunningActions: (actionNames: string[]) => void;
-
-  cmdkReferenceData: TCmdkReferenceData;
 
   projectHandlers: TFileHandlerCollection;
   setProjectHandlers: (projectHandlerObj: TFileHandlerCollection) => void;

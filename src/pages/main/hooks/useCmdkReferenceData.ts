@@ -27,6 +27,8 @@ import {
   fileCmdk,
   getKeyObjectsFromCommand,
 } from "../helper";
+import { useDispatch } from "react-redux";
+import { setCmdkReferenceData } from "@_redux/main/cmdk";
 
 interface IUseCmdkReferenceData {
   addRunningActions: (actionNames: string[]) => void;
@@ -54,11 +56,10 @@ export const useCmdkReferenceData = ({
   setRecentProjectHandlers,
   htmlReferenceData,
 }: IUseCmdkReferenceData) => {
+  const dispatch = useDispatch();
   const { fileTree, fFocusedItem, nodeTree, nFocusedItem, cmdkSearchContent } =
     useAppState();
 
-  const [cmdkReferenceData, setCmdkReferenceData] =
-    useState<TCmdkReferenceData>({});
   const [cmdkReferenceJumpstart, setCmdkReferenceJumpstart] =
     useState<TCmdkGroupData>({});
   const [cmdkReferenceActions, setCmdkReferenceActions] =
@@ -182,7 +183,7 @@ export const useCmdkReferenceData = ({
         console.log("cmdk actions reference data: ", _cmdkRefActionsData);
 
       // set cmdk map
-      setCmdkReferenceData(_cmdkReferenceData);
+      dispatch(setCmdkReferenceData(_cmdkReferenceData));
       LogAllow && console.log("cmdk map: ", _cmdkReferenceData);
 
       removeRunningActions(["reference-cmdk"]);
@@ -287,7 +288,6 @@ export const useCmdkReferenceData = ({
   }, [nodeTree, nFocusedItem, htmlReferenceData]);
 
   return {
-    cmdkReferenceData,
     cmdkReferenceJumpstart,
     cmdkReferenceActions,
     cmdkReferneceRecentProject,

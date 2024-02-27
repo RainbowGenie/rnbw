@@ -83,6 +83,7 @@ export const useAppState = () => {
         currentCmdkPage,
         cmdkSearchContent,
         currentCommand,
+        cmdkReferenceData,
       },
     },
   } = useSelector((state: AppState) => state);
@@ -180,5 +181,6 @@ export const useAppState = () => {
 
     cmdkSearchContent,
     currentCommand,
+    cmdkReferenceData,
   };
 };
