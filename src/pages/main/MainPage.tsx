@@ -67,8 +67,6 @@ export default function MainPage() {
   // get,set
   const { addRunningActions, removeRunningActions } = useRunningActions();
   const {
-    projectHandlers,
-    setProjectHandlers,
     currentProjectFileHandle,
     setCurrentProjectFileHandle,
     fileHandlers,
@@ -238,8 +236,6 @@ export default function MainPage() {
           addRunningActions,
           removeRunningActions,
 
-          projectHandlers,
-          setProjectHandlers,
           currentProjectFileHandle,
           setCurrentProjectFileHandle,
           fileHandlers,
