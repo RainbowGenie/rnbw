@@ -6,7 +6,6 @@ export const MainContext: Context<TMainContext> = createContext<TMainContext>({
   addRunningActions: () => {},
   removeRunningActions: () => {},
 
-  recentProjectNames: [],
   recentProjectHandlers: [],
   recentProjectContexts: [],
 

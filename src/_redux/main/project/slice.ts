@@ -5,6 +5,7 @@ const projectReducerInitialState: TProjectReducerState = {
   projectHandlers: {},
   currentProjectFileHandle: null,
   fileHandlers: {},
+  recentProjectNames: [],
 };
 const projectSlice = createSlice({
   name: "project",
@@ -25,11 +26,16 @@ const projectSlice = createSlice({
       const fileHandlers = action.payload;
       state.fileHandlers = fileHandlers;
     },
+    setRecentProjectNames(state, action: PayloadAction<string[]>) {
+      const recentProjectNames = action.payload;
+      state.recentProjectNames = recentProjectNames;
+    },
   },
 });
 export const {
   setProjectHandlers,
   setCurrentProjectFileHandle,
   setFileHandlers,
+  setRecentProjectNames,
 } = projectSlice.actions;
 export const ProjectReducer = projectSlice.reducer;

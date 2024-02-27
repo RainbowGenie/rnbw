@@ -32,7 +32,6 @@ export type TMainContext = {
   addRunningActions: (actionNames: string[]) => void;
   removeRunningActions: (actionNames: string[]) => void;
 
-  recentProjectNames: string[];
   recentProjectHandlers: (FileSystemDirectoryHandle | null)[];
   recentProjectContexts: TProjectContext[];
 

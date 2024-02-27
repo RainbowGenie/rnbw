@@ -67,10 +67,8 @@ export default function MainPage() {
   const { addRunningActions, removeRunningActions } = useRunningActions();
   const {
     recentProjectContexts,
-    recentProjectNames,
     recentProjectHandlers,
     setRecentProjectContexts,
-    setRecentProjectNames,
     setRecentProjectHandlers,
   } = useRecentProjects();
 
@@ -98,10 +96,8 @@ export default function MainPage() {
     addRunningActions,
     removeRunningActions,
     recentProjectContexts,
-    recentProjectNames,
     recentProjectHandlers,
     setRecentProjectContexts,
-    setRecentProjectNames,
     setRecentProjectHandlers,
     htmlReferenceData,
   });
@@ -112,10 +108,8 @@ export default function MainPage() {
     triggerCurrentProjectReload,
   } = useHandlers({
     recentProjectContexts,
-    recentProjectNames,
     recentProjectHandlers,
     setRecentProjectContexts,
-    setRecentProjectNames,
     setRecentProjectHandlers,
   });
   const { onJumpstart, onNew, onClear, onUndo, onRedo } = useCmdk({
@@ -226,7 +220,6 @@ export default function MainPage() {
           addRunningActions,
           removeRunningActions,
 
-          recentProjectNames,
           recentProjectHandlers,
           recentProjectContexts,
 
