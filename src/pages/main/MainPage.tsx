@@ -33,7 +33,6 @@ import {
   useCmdk,
   useCmdkModal,
   useCmdkReferenceData,
-  useFileHandlers,
   useHandlers,
   useInit,
   useInvalidFileNodes,
