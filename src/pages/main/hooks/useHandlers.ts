@@ -37,12 +37,9 @@ import {
 import { useAppState } from "@_redux/useAppState";
 
 import { clearProjectSession } from "../helper";
+import { setCurrentProjectFileHandle } from "@_redux/main/project";
 
 interface IUseHandlers {
-  currentProjectFileHandle: FileSystemDirectoryHandle | null;
-  setCurrentProjectFileHandle: React.Dispatch<
-    React.SetStateAction<FileSystemDirectoryHandle | null>
-  >;
   setFileHandlers: React.Dispatch<React.SetStateAction<TFileHandlerCollection>>;
   recentProjectContexts: TProjectContext[];
   recentProjectNames: string[];
@@ -56,8 +53,6 @@ interface IUseHandlers {
   >;
 }
 export const useHandlers = ({
-  currentProjectFileHandle,
-  setCurrentProjectFileHandle,
   setFileHandlers,
   recentProjectContexts,
   recentProjectNames,
@@ -66,6 +61,7 @@ export const useHandlers = ({
   setRecentProjectNames,
   setRecentProjectHandlers,
 }: IUseHandlers) => {
+  const { currentProjectFileHandle } = useAppState();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const {
@@ -154,8 +150,10 @@ export const useHandlers = ({
               favicon: null,
             }),
           );
-          setCurrentProjectFileHandle(
-            projectHandle as FileSystemDirectoryHandle,
+          dispatch(
+            setCurrentProjectFileHandle(
+              projectHandle as FileSystemDirectoryHandle,
+            ),
           );
 
           dispatch(setFileTree(_fileTree));
@@ -193,7 +191,7 @@ export const useHandlers = ({
               favicon: null,
             }),
           );
-          setCurrentProjectFileHandle(null);
+          dispatch(setCurrentProjectFileHandle(null));
 
           dispatch(setFileTree(_fileTree));
           dispatch(setInitialFileUidToOpen(_initialFileUidToOpen));

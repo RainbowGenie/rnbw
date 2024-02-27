@@ -60,12 +60,12 @@ export default function WorkspaceTreeView() {
     activePanel,
     prevRenderableFileUid,
     filesReferenceData,
+    currentProjectFileHandle,
   } = useAppState();
   const {
     addRunningActions,
     removeRunningActions,
     invalidFileNodes,
-    currentProjectFileHandle,
     recentProjectNames,
     recentProjectHandlers,
     recentProjectContexts,

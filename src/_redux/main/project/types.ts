@@ -5,4 +5,5 @@ export type TFileHandlerCollection = {
 };
 export type TProjectReducerState = {
   projectHandlers: TFileHandlerCollection;
+  currentProjectFileHandle: FileSystemDirectoryHandle | null;
 };

@@ -6,8 +6,6 @@ export const MainContext: Context<TMainContext> = createContext<TMainContext>({
   addRunningActions: () => {},
   removeRunningActions: () => {},
 
-  currentProjectFileHandle: null,
-  setCurrentProjectFileHandle: () => {},
   fileHandlers: {},
   setFileHandlers: () => {},
 

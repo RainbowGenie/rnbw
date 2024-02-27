@@ -32,10 +32,6 @@ export type TMainContext = {
   addRunningActions: (actionNames: string[]) => void;
   removeRunningActions: (actionNames: string[]) => void;
 
-  currentProjectFileHandle: FileSystemDirectoryHandle | null;
-  setCurrentProjectFileHandle: (
-    fileHandler: FileSystemDirectoryHandle | null,
-  ) => void;
   fileHandlers: TFileHandlerCollection;
   setFileHandlers: (fileHandlerObj: TFileHandlerCollection) => void;
 

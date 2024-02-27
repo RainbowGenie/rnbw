@@ -79,6 +79,7 @@ export const useAppState = () => {
       },
       project: {
         projectHandlers,
+        currentProjectFileHandle,
       },
       cmdk: {
         cmdkOpen,
@@ -179,6 +180,7 @@ export const useAppState = () => {
     htmlReferenceData,
 
     projectHandlers,
+    currentProjectFileHandle,
 
     cmdkOpen,
     cmdkPages,
