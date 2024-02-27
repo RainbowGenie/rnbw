@@ -36,7 +36,6 @@ import {
   useHandlers,
   useInit,
   useInvalidFileNodes,
-  useRecentProjects,
   useReferneces,
   useRunningActions,
 } from "./hooks";
@@ -62,14 +61,11 @@ export default function MainPage() {
     htmlReferenceData,
     cmdkReferenceData,
     recentProjectHandlers,
+    recentProjectContexts,
   } = useAppState();
 
   // get,set
   const { addRunningActions, removeRunningActions } = useRunningActions();
-  const {
-    recentProjectContexts,
-    setRecentProjectContexts,
-  } = useRecentProjects();
 
   const {
     monacoEditorRef,
@@ -94,8 +90,6 @@ export default function MainPage() {
   } = useCmdkReferenceData({
     addRunningActions,
     removeRunningActions,
-    recentProjectContexts,
-    setRecentProjectContexts,
     htmlReferenceData,
   });
   const {
@@ -103,10 +97,7 @@ export default function MainPage() {
     closeNavigator,
     reloadCurrentProject,
     triggerCurrentProjectReload,
-  } = useHandlers({
-    recentProjectContexts,
-    setRecentProjectContexts,
-  });
+  } = useHandlers();
   const { onJumpstart, onNew, onClear, onUndo, onRedo } = useCmdk({
     cmdkReferenceData,
     importProject,
@@ -214,8 +205,6 @@ export default function MainPage() {
         value={{
           addRunningActions,
           removeRunningActions,
-
-          recentProjectContexts,
 
           monacoEditorRef,
 

@@ -6,8 +6,6 @@ export const MainContext: Context<TMainContext> = createContext<TMainContext>({
   addRunningActions: () => {},
   removeRunningActions: () => {},
 
-  recentProjectContexts: [],
-
   monacoEditorRef: { current: null },
   setMonacoEditorRef: () => {},
   iframeRefRef: { current: null },

@@ -2,7 +2,6 @@ import { MutableRefObject } from "react";
 
 import { editor } from "monaco-editor";
 
-import { TFileHandlerCollection } from "@_node/file";
 import { TNodeUid } from "@_node/types";
 
 import { TFileAction, TProjectContext } from "./fileTree";
@@ -31,8 +30,6 @@ export type TUpdateTreeViewStatePayload = {
 export type TMainContext = {
   addRunningActions: (actionNames: string[]) => void;
   removeRunningActions: (actionNames: string[]) => void;
-
-  recentProjectContexts: TProjectContext[];
 
   monacoEditorRef: IEditorRef;
   setMonacoEditorRef: (

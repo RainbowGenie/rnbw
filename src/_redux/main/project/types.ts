@@ -1,4 +1,5 @@
 import { TNodeUid } from "@_node/types";
+import { TProjectContext } from "../fileTree";
 
 export type TFileHandlerCollection = {
   [uid: TNodeUid]: FileSystemHandle;
@@ -9,4 +10,5 @@ export type TProjectReducerState = {
   fileHandlers: TFileHandlerCollection;
   recentProjectNames: string[];
   recentProjectHandlers: (FileSystemDirectoryHandle | null)[];
+  recentProjectContexts: TProjectContext[];
 };

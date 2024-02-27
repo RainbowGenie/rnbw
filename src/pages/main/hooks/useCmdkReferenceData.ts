@@ -30,6 +30,7 @@ import {
 import { useDispatch } from "react-redux";
 import { setCmdkReferenceData } from "@_redux/main/cmdk";
 import {
+  setRecentProjectContexts,
   setRecentProjectHandlers,
   setRecentProjectNames,
 } from "@_redux/main/project";
@@ -37,17 +38,11 @@ import {
 interface IUseCmdkReferenceData {
   addRunningActions: (actionNames: string[]) => void;
   removeRunningActions: (actionNames: string[]) => void;
-  recentProjectContexts: TProjectContext[];
-  setRecentProjectContexts: React.Dispatch<
-    React.SetStateAction<TProjectContext[]>
-  >;
   htmlReferenceData: THtmlReferenceData;
 }
 export const useCmdkReferenceData = ({
   addRunningActions,
   removeRunningActions,
-  recentProjectContexts,
-  setRecentProjectContexts,
   htmlReferenceData,
 }: IUseCmdkReferenceData) => {
   const dispatch = useDispatch();
@@ -59,6 +54,7 @@ export const useCmdkReferenceData = ({
     cmdkSearchContent,
     recentProjectNames,
     recentProjectHandlers,
+    recentProjectContexts,
   } = useAppState();
 
   const [cmdkReferenceJumpstart, setCmdkReferenceJumpstart] =
@@ -107,7 +103,9 @@ export const useCmdkReferenceData = ({
                   "recent-project-name": sessionInfo[1],
                   "recent-project-handler": sessionInfo[2],
                 };
-                setRecentProjectContexts(_session["recent-project-context"]);
+                dispatch(
+                  setRecentProjectContexts(_session["recent-project-context"]),
+                );
                 dispatch(
                   setRecentProjectNames(_session["recent-project-name"]),
                 );

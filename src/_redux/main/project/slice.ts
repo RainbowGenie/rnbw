@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { TFileHandlerCollection, TProjectReducerState } from "./types";
+import { TProjectContext } from "../fileTree";
 
 const projectReducerInitialState: TProjectReducerState = {
   projectHandlers: {},
@@ -7,6 +8,7 @@ const projectReducerInitialState: TProjectReducerState = {
   fileHandlers: {},
   recentProjectNames: [],
   recentProjectHandlers: [],
+  recentProjectContexts: [],
 };
 const projectSlice = createSlice({
   name: "project",
@@ -38,6 +40,10 @@ const projectSlice = createSlice({
       const recentProjectHandlers = action.payload;
       state.recentProjectHandlers = recentProjectHandlers;
     },
+    setRecentProjectContexts(state, action: PayloadAction<TProjectContext[]>) {
+      const recentProjectContexts = action.payload;
+      state.recentProjectContexts = recentProjectContexts;
+    },
   },
 });
 export const {
@@ -46,5 +52,6 @@ export const {
   setFileHandlers,
   setRecentProjectNames,
   setRecentProjectHandlers,
+  setRecentProjectContexts,
 } = projectSlice.actions;
 export const ProjectReducer = projectSlice.reducer;
