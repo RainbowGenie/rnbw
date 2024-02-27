@@ -73,6 +73,9 @@ export const useAppState = () => {
         didRedo,
         loading,
       },
+      reference: {
+        filesReferenceData,
+      },
       cmdk: {
         cmdkOpen,
         cmdkPages,
@@ -166,6 +169,8 @@ export const useAppState = () => {
     didUndo,
     didRedo,
     loading,
+
+    filesReferenceData,
 
     cmdkOpen,
     cmdkPages,

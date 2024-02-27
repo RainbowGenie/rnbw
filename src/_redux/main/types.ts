@@ -6,7 +6,6 @@ import { TFileHandlerCollection } from "@_node/file";
 import { TNodeUid } from "@_node/types";
 import {
   TCmdkReferenceData,
-  TFilesReferenceData,
   THtmlReferenceData,
 } from "@_types/main";
 
@@ -37,7 +36,6 @@ export type TMainContext = {
   addRunningActions: (actionNames: string[]) => void;
   removeRunningActions: (actionNames: string[]) => void;
 
-  filesReferenceData: TFilesReferenceData;
   htmlReferenceData: THtmlReferenceData;
   cmdkReferenceData: TCmdkReferenceData;
 

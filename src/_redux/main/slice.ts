@@ -7,9 +7,11 @@ import { FileEventReducer } from "./fileTree/event";
 import { NodeTreeReducer } from "./nodeTree";
 import { NodeEventReducer } from "./nodeTree/event";
 import { ProcessorReduer } from "./processor";
+import { ReferenceReducer } from "./reference";
 import { StageViewReducer } from "./stageView";
 
 export const MainReducer = combineReducers({
+  reference: ReferenceReducer,
   processor: ProcessorReduer,
 
   cmdk: CmdkReduer,

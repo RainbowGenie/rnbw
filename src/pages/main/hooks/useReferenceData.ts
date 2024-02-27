@@ -6,30 +6,17 @@ import filesRef from "@_ref/rfrncs/Files.csv";
 // @ts-ignore
 import htmlRefElements from "@_ref/rfrncs/HTML Elements.csv";
 import {
-  TFilesReference,
-  TFilesReferenceData,
   THtmlElementsReference,
   THtmlElementsReferenceData,
   THtmlReferenceData,
 } from "@_types/main";
 
 export const useReferenceData = () => {
-  const [filesReferenceData, setFilesReferenceData] =
-    useState<TFilesReferenceData>({});
   const [htmlReferenceData, setHtmlReferenceData] =
     useState<THtmlReferenceData>({
       elements: {},
     });
 
-  // reference-files
-  useEffect(() => {
-    const _filesReferenceData: TFilesReferenceData = {};
-    filesRef.map((fileRef: TFilesReference) => {
-      _filesReferenceData[fileRef.Extension] = fileRef;
-    });
-    setFilesReferenceData(_filesReferenceData);
-    LogAllow && console.info("files reference data: ", _filesReferenceData);
-  }, []);
   // reference-html-elements
   useEffect(() => {
     const htmlElementsReferenceData: THtmlElementsReferenceData = {};
@@ -46,7 +33,6 @@ export const useReferenceData = () => {
   }, []);
 
   return {
-    filesReferenceData,
     htmlReferenceData,
   };
 };

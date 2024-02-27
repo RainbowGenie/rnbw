@@ -28,7 +28,6 @@ import {
 } from "@_redux/main/cmdk";
 import { useAppState } from "@_redux/useAppState";
 import { TCmdkContext, TCmdkKeyMap, TCmdkReference } from "@_types/main";
-
 import { getCommandKey } from "../../services/global";
 import {
   useCmdk,
@@ -83,7 +82,7 @@ export default function MainPage() {
     setRecentProjectHandlers,
   } = useRecentProjects();
 
-  const { filesReferenceData, htmlReferenceData } = useReferenceData();
+  const { htmlReferenceData } = useReferenceData();
   const {
     monacoEditorRef,
     setMonacoEditorRef,
@@ -240,7 +239,6 @@ export default function MainPage() {
           addRunningActions,
           removeRunningActions,
 
-          filesReferenceData,
           htmlReferenceData,
           cmdkReferenceData,
 
