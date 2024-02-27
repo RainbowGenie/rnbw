@@ -72,8 +72,9 @@ const NodeTreeView = () => {
     hoveredNodeUid,
 
     fExpandedItemsObj: expandedItemsObj,
+    htmlReferenceData,
   } = useAppState();
-  const { addRunningActions, htmlReferenceData } = useContext(MainContext);
+  const { addRunningActions } = useContext(MainContext);
 
   // ------ sync ------
   // cmdk

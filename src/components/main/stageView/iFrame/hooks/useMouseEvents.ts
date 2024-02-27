@@ -43,16 +43,14 @@ export const useMouseEvents = ({
   isEditingRef,
 }: IUseMouseEventsProps) => {
   const dispatch = useDispatch();
-  const {
-    monacoEditorRef,
-    setIsContentProgrammaticallyChanged,
-    htmlReferenceData,
-  } = useContext(MainContext);
+  const { monacoEditorRef, setIsContentProgrammaticallyChanged } =
+    useContext(MainContext);
   const {
     fileTree,
     validNodeTree,
     fExpandedItemsObj: expandedItemsObj,
     formatCode,
+    htmlReferenceData,
   } = useAppState();
 
   const mostRecentClickedNodeUidRef = useRef<TNodeUid>(""); //This is used because dbl clikc event was not able to receive the uid of the node that was clicked

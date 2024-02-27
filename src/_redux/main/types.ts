@@ -4,10 +4,7 @@ import { editor } from "monaco-editor";
 
 import { TFileHandlerCollection } from "@_node/file";
 import { TNodeUid } from "@_node/types";
-import {
-  TCmdkReferenceData,
-  THtmlReferenceData,
-} from "@_types/main";
+import { TCmdkReferenceData } from "@_types/main";
 
 import { TFileAction, TProjectContext } from "./fileTree";
 
@@ -36,7 +33,6 @@ export type TMainContext = {
   addRunningActions: (actionNames: string[]) => void;
   removeRunningActions: (actionNames: string[]) => void;
 
-  htmlReferenceData: THtmlReferenceData;
   cmdkReferenceData: TCmdkReferenceData;
 
   projectHandlers: TFileHandlerCollection;

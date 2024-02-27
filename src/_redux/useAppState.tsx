@@ -75,6 +75,7 @@ export const useAppState = () => {
       },
       reference: {
         filesReferenceData,
+        htmlReferenceData,
       },
       cmdk: {
         cmdkOpen,
@@ -171,6 +172,7 @@ export const useAppState = () => {
     loading,
 
     filesReferenceData,
+    htmlReferenceData,
 
     cmdkOpen,
     cmdkPages,

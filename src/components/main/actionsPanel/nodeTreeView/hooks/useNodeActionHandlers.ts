@@ -20,12 +20,10 @@ export const useNodeActionHandlers = () => {
     nSelectedItems: selectedItems,
     formatCode,
     copiedNodeDisplayName,
-  } = useAppState();
-  const {
     htmlReferenceData,
-    monacoEditorRef,
-    setIsContentProgrammaticallyChanged,
-  } = useContext(MainContext);
+  } = useAppState();
+  const { monacoEditorRef, setIsContentProgrammaticallyChanged } =
+    useContext(MainContext);
 
   const onAddNode = useCallback(
     (actionName: string) => {

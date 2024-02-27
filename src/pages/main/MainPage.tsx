@@ -38,7 +38,6 @@ import {
   useInit,
   useInvalidFileNodes,
   useRecentProjects,
-  useReferenceData,
   useReferneces,
   useRunningActions,
 } from "./hooks";
@@ -61,6 +60,7 @@ export default function MainPage() {
     cmdkPages,
     currentCmdkPage,
     cmdkSearchContent,
+    htmlReferenceData,
   } = useAppState();
 
   // get,set
@@ -82,7 +82,6 @@ export default function MainPage() {
     setRecentProjectHandlers,
   } = useRecentProjects();
 
-  const { htmlReferenceData } = useReferenceData();
   const {
     monacoEditorRef,
     setMonacoEditorRef,
@@ -239,7 +238,6 @@ export default function MainPage() {
           addRunningActions,
           removeRunningActions,
 
-          htmlReferenceData,
           cmdkReferenceData,
 
           projectHandlers,

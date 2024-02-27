@@ -5,7 +5,6 @@ export * from "./useFileHandlers";
 export * from "./useHandlers";
 export * from "./useInit";
 export * from "./useRecentProjects";
-export * from "./useReferenceData";
 export * from "./useReferences";
 export * from "./useRunningActions";
 export * from "./useInvalidFileNodes";

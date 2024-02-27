@@ -51,12 +51,12 @@ export const useNodeActionsHandler = () => {
     fSelectedItems: selectedItems,
     clipboardData,
     webComponentOpen,
+    htmlReferenceData,
   } = useAppState();
   const {
     addRunningActions,
     removeRunningActions,
     fileHandlers,
-    htmlReferenceData,
     invalidFileNodes,
     addInvalidFileNodes,
     removeInvalidFileNodes,
