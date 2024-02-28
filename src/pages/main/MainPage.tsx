@@ -72,8 +72,6 @@ export default function MainPage() {
     setMonacoEditorRef,
     iframeRefRef,
     setIframeRefRef,
-    isContentProgrammaticallyChanged,
-    setIsContentProgrammaticallyChanged,
     isCodeTyping,
     setIsCodeTyping,
   } = useReferneces();
@@ -211,8 +209,6 @@ export default function MainPage() {
           setMonacoEditorRef,
           iframeRefRef,
           setIframeRefRef,
-          isContentProgrammaticallyChanged,
-          setIsContentProgrammaticallyChanged,
           isCodeTyping,
           setIsCodeTyping,
 

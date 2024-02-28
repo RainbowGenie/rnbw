@@ -43,8 +43,7 @@ export const useMouseEvents = ({
   isEditingRef,
 }: IUseMouseEventsProps) => {
   const dispatch = useDispatch();
-  const { monacoEditorRef, setIsContentProgrammaticallyChanged } =
-    useContext(MainContext);
+  const { monacoEditorRef } = useContext(MainContext);
   const {
     fileTree,
     validNodeTree,
@@ -126,7 +125,6 @@ export const useMouseEvents = ({
           nodeTree: nodeTreeRef.current,
           contentEditableUid,
           codeViewInstanceModel,
-          setIsContentProgrammaticallyChanged,
           formatCode,
         });
       }

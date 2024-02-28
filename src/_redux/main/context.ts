@@ -10,10 +10,7 @@ export const MainContext: Context<TMainContext> = createContext<TMainContext>({
   setMonacoEditorRef: () => {},
   iframeRefRef: { current: null },
   setIframeRefRef: () => {},
-  isContentProgrammaticallyChanged: {
-    current: false,
-  },
-  setIsContentProgrammaticallyChanged: () => {},
+
   isCodeTyping: {
     current: false,
   },

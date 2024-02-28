@@ -28,8 +28,7 @@ export const useCmdk = ({
 }: IUseCmdkProps) => {
   const dispatch = useDispatch();
   const { osType, cmdkReferenceData } = useAppState();
-  const { monacoEditorRef, setIsContentProgrammaticallyChanged } =
-    useContext(MainContext);
+  const { monacoEditorRef } = useContext(MainContext);
 
   const { formatCode } = useAppState();
 
@@ -108,7 +107,6 @@ export const useCmdk = ({
               nodeTree: nodeTreeRef.current,
               contentEditableUid,
               codeViewInstanceModel,
-              setIsContentProgrammaticallyChanged,
               formatCode,
               cb:
                 action === "Save"

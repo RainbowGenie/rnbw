@@ -31,6 +31,7 @@ htmlRefElements.map((htmlRefElement: THtmlElementsReference) => {
 const referenceReducerInitialState: TReferenceReducerState = {
   filesReferenceData: _filesReferenceData,
   htmlReferenceData: { elements: _htmlElementsReferenceData },
+  isContentProgrammaticallyChanged: false,
 };
 const referenceSlice = createSlice({
   name: "reference",
@@ -44,8 +45,15 @@ const referenceSlice = createSlice({
       const htmlReferenceData = action.payload;
       state.htmlReferenceData = htmlReferenceData;
     },
+    setIsContentProgrammaticallyChanged(state, action: PayloadAction<boolean>) {
+      const isContentProgrammaticallyChanged = action.payload;
+      state.isContentProgrammaticallyChanged = isContentProgrammaticallyChanged;
+    },
   },
 });
-export const { setFilesReferenceData, setHtmlReferenceData } =
-  referenceSlice.actions;
+export const {
+  setFilesReferenceData,
+  setHtmlReferenceData,
+  setIsContentProgrammaticallyChanged,
+} = referenceSlice.actions;
 export const ReferenceReducer = referenceSlice.reducer;

@@ -27,15 +27,18 @@ import { useAppState } from "@_redux/useAppState";
 import { getCodeViewTheme, getLanguageFromExtension } from "../helpers";
 import { TCodeSelection } from "../types";
 import { useSaveCommand } from "@_pages/main/processor/hooks";
+import { setIsContentProgrammaticallyChanged } from "@_redux/main/reference";
 
 const useEditor = () => {
   const dispatch = useDispatch();
-  const { theme: _theme, autoSave } = useAppState();
+  const {
+    theme: _theme,
+    autoSave,
+    isContentProgrammaticallyChanged,
+  } = useAppState();
   const {
     monacoEditorRef,
     setMonacoEditorRef,
-    isContentProgrammaticallyChanged,
-    setIsContentProgrammaticallyChanged,
     setIsCodeTyping,
 
     onUndo,
@@ -159,7 +162,7 @@ const useEditor = () => {
   const debouncedOnChange = useCallback(
     debounce((value) => {
       onChange(value);
-      setIsContentProgrammaticallyChanged(false);
+      dispatch(setIsContentProgrammaticallyChanged(false));
     }, CodeViewSyncDelay),
     [onChange],
   );
@@ -175,7 +178,7 @@ const useEditor = () => {
 
       setIsCodeTyping(true);
 
-      if (isContentProgrammaticallyChanged.current) {
+      if (isContentProgrammaticallyChanged) {
         debouncedOnChange(value);
       } else {
         longDebouncedOnChange(value);
