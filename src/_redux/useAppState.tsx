@@ -77,6 +77,7 @@ export const useAppState = () => {
         filesReferenceData,
         htmlReferenceData,
         isContentProgrammaticallyChanged,
+        isCodeTyping,
       },
       project: {
         projectHandlers,
@@ -184,6 +185,7 @@ export const useAppState = () => {
     filesReferenceData,
     htmlReferenceData,
     isContentProgrammaticallyChanged,
+    isCodeTyping,
 
     projectHandlers,
     currentProjectFileHandle,

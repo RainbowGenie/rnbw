@@ -11,11 +11,6 @@ export const MainContext: Context<TMainContext> = createContext<TMainContext>({
   iframeRefRef: { current: null },
   setIframeRefRef: () => {},
 
-  isCodeTyping: {
-    current: false,
-  },
-  setIsCodeTyping: () => {},
-
   invalidFileNodes: {},
   addInvalidFileNodes: () => {},
   removeInvalidFileNodes: () => {},

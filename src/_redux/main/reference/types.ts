@@ -35,4 +35,5 @@ export type TReferenceReducerState = {
   filesReferenceData: TFilesReferenceData;
   htmlReferenceData: THtmlReferenceData;
   isContentProgrammaticallyChanged: boolean;
+  isCodeTyping: boolean;
 };

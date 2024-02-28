@@ -38,8 +38,9 @@ export default function CodeView() {
     showCodeView,
 
     editingNodeUidInCodeView,
+    isCodeTyping,
   } = useAppState();
-  const { isCodeTyping, monacoEditorRef } = useContext(MainContext);
+  const { monacoEditorRef } = useContext(MainContext);
 
   const {
     handleEditorDidMount,
@@ -167,7 +168,7 @@ export default function CodeView() {
 
   // code select -> selectedUids
   useEffect(() => {
-    if (!codeSelection || isCodeTyping.current) return;
+    if (!codeSelection || isCodeTyping) return;
 
     const file = fileTree[currentFileUid];
     if (!file) return;

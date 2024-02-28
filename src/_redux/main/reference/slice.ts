@@ -32,6 +32,7 @@ const referenceReducerInitialState: TReferenceReducerState = {
   filesReferenceData: _filesReferenceData,
   htmlReferenceData: { elements: _htmlElementsReferenceData },
   isContentProgrammaticallyChanged: false,
+  isCodeTyping: false,
 };
 const referenceSlice = createSlice({
   name: "reference",
@@ -49,11 +50,16 @@ const referenceSlice = createSlice({
       const isContentProgrammaticallyChanged = action.payload;
       state.isContentProgrammaticallyChanged = isContentProgrammaticallyChanged;
     },
+    setIsCodeTyping(state, action: PayloadAction<boolean>) {
+      const isCodeTyping = action.payload;
+      state.isCodeTyping = isCodeTyping;
+    },
   },
 });
 export const {
   setFilesReferenceData,
   setHtmlReferenceData,
   setIsContentProgrammaticallyChanged,
+  setIsCodeTyping,
 } = referenceSlice.actions;
 export const ReferenceReducer = referenceSlice.reducer;

@@ -14,17 +14,11 @@ export const useReferneces = () => {
   const setIframeRefRef = useCallback((iframeRef: HTMLIFrameElement | null) => {
     iframeRefRef.current = iframeRef;
   }, []);
-  const isCodeTyping = useRef(false);
-  const setIsCodeTyping = useCallback((value: boolean) => {
-    isCodeTyping.current = value;
-  }, []);
 
   return {
     monacoEditorRef,
     setMonacoEditorRef,
     iframeRefRef,
     setIframeRefRef,
-    isCodeTyping,
-    setIsCodeTyping,
   };
 };

@@ -27,7 +27,10 @@ import { useAppState } from "@_redux/useAppState";
 import { getCodeViewTheme, getLanguageFromExtension } from "../helpers";
 import { TCodeSelection } from "../types";
 import { useSaveCommand } from "@_pages/main/processor/hooks";
-import { setIsContentProgrammaticallyChanged } from "@_redux/main/reference";
+import {
+  setIsCodeTyping,
+  setIsContentProgrammaticallyChanged,
+} from "@_redux/main/reference";
 
 const useEditor = () => {
   const dispatch = useDispatch();
@@ -39,7 +42,6 @@ const useEditor = () => {
   const {
     monacoEditorRef,
     setMonacoEditorRef,
-    setIsCodeTyping,
 
     onUndo,
     onRedo,
@@ -153,7 +155,7 @@ const useEditor = () => {
             : null,
         ),
       );
-      setIsCodeTyping(false);
+      dispatch(setIsCodeTyping(false));
       autoSave && debouncedAutoSave();
     },
     [debouncedAutoSave, autoSave],
@@ -176,7 +178,7 @@ const useEditor = () => {
     (value: string | undefined) => {
       if (value === undefined) return;
 
-      setIsCodeTyping(true);
+      dispatch(setIsCodeTyping(true));
 
       if (isContentProgrammaticallyChanged) {
         debouncedOnChange(value);

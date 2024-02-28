@@ -72,8 +72,6 @@ export default function MainPage() {
     setMonacoEditorRef,
     iframeRefRef,
     setIframeRefRef,
-    isCodeTyping,
-    setIsCodeTyping,
   } = useReferneces();
   const { invalidFileNodes, addInvalidFileNodes, removeInvalidFileNodes } =
     useInvalidFileNodes();
@@ -209,8 +207,6 @@ export default function MainPage() {
           setMonacoEditorRef,
           iframeRefRef,
           setIframeRefRef,
-          isCodeTyping,
-          setIsCodeTyping,
 
           invalidFileNodes,
           addInvalidFileNodes,

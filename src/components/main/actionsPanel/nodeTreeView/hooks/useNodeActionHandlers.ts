@@ -24,10 +24,6 @@ export const useNodeActionHandlers = () => {
     htmlReferenceData,
     isContentProgrammaticallyChanged,
   } = useAppState();
-  console.log(
-    "isContentProgrammaticallyChanged",
-    isContentProgrammaticallyChanged,
-  );
   const { monacoEditorRef } = useContext(MainContext);
 
   const onAddNode = useCallback(

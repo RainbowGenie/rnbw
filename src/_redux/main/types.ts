@@ -37,8 +37,6 @@ export type TMainContext = {
   ) => void;
   iframeRefRef: MutableRefObject<HTMLIFrameElement | null>;
   setIframeRefRef: (iframeRef: HTMLIFrameElement | null) => void;
-  isCodeTyping: React.RefObject<boolean>;
-  setIsCodeTyping: (value: boolean) => void;
 
   invalidFileNodes: {
     [uid: TNodeUid]: true;
