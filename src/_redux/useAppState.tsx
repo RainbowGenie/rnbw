@@ -24,6 +24,7 @@ export const useAppState = () => {
         hoveredFileUid,
         doingFileAction,
         lastFileAction,
+        invalidFileNodes,
       },
       fileEvent: {
         past: fileEventPast,
@@ -125,6 +126,7 @@ export const useAppState = () => {
 
     doingFileAction,
     lastFileAction,
+    invalidFileNodes,
 
     fileAction,
     fileEventPast,

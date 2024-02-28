@@ -11,10 +11,6 @@ export const MainContext: Context<TMainContext> = createContext<TMainContext>({
   iframeRefRef: { current: null },
   setIframeRefRef: () => {},
 
-  invalidFileNodes: {},
-  addInvalidFileNodes: () => {},
-  removeInvalidFileNodes: () => {},
-
   importProject: () => {},
   reloadCurrentProject: () => {},
   triggerCurrentProjectReload: () => {},

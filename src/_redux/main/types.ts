@@ -38,12 +38,6 @@ export type TMainContext = {
   iframeRefRef: MutableRefObject<HTMLIFrameElement | null>;
   setIframeRefRef: (iframeRef: HTMLIFrameElement | null) => void;
 
-  invalidFileNodes: {
-    [uid: TNodeUid]: true;
-  };
-  addInvalidFileNodes: (...uids: TNodeUid[]) => void;
-  removeInvalidFileNodes: (...uids: TNodeUid[]) => void;
-
   importProject: (
     fsType: TProjectContext,
     projectHandle?: FileSystemDirectoryHandle | null,

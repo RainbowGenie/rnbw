@@ -22,7 +22,6 @@ export const useNodeActionHandlers = () => {
     formatCode,
     copiedNodeDisplayName,
     htmlReferenceData,
-    isContentProgrammaticallyChanged,
   } = useAppState();
   const { monacoEditorRef } = useContext(MainContext);
 
