@@ -35,7 +35,6 @@ import {
   useCmdkReferenceData,
   useHandlers,
   useInit,
-  useInvalidFileNodes,
   useReferneces,
   useRunningActions,
 } from "./hooks";
@@ -72,13 +71,7 @@ export default function MainPage() {
     setMonacoEditorRef,
     iframeRefRef,
     setIframeRefRef,
-    isContentProgrammaticallyChanged,
-    setIsContentProgrammaticallyChanged,
-    isCodeTyping,
-    setIsCodeTyping,
   } = useReferneces();
-  const { invalidFileNodes, addInvalidFileNodes, removeInvalidFileNodes } =
-    useInvalidFileNodes();
 
   // hooks
   const {
@@ -211,14 +204,6 @@ export default function MainPage() {
           setMonacoEditorRef,
           iframeRefRef,
           setIframeRefRef,
-          isContentProgrammaticallyChanged,
-          setIsContentProgrammaticallyChanged,
-          isCodeTyping,
-          setIsCodeTyping,
-
-          invalidFileNodes,
-          addInvalidFileNodes,
-          removeInvalidFileNodes,
 
           importProject,
           reloadCurrentProject,

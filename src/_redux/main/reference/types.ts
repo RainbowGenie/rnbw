@@ -1,4 +1,3 @@
-
 // file reference
 export type TFilesReferenceData = {
   [name: string]: TFilesReference;
@@ -35,4 +34,6 @@ export type THtmlElementsReference = {
 export type TReferenceReducerState = {
   filesReferenceData: TFilesReferenceData;
   htmlReferenceData: THtmlReferenceData;
+  isContentProgrammaticallyChanged: boolean;
+  isCodeTyping: boolean;
 };

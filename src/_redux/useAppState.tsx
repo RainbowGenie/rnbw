@@ -24,6 +24,7 @@ export const useAppState = () => {
         hoveredFileUid,
         doingFileAction,
         lastFileAction,
+        invalidFileNodes,
       },
       fileEvent: {
         past: fileEventPast,
@@ -76,6 +77,8 @@ export const useAppState = () => {
       reference: {
         filesReferenceData,
         htmlReferenceData,
+        isContentProgrammaticallyChanged,
+        isCodeTyping,
       },
       project: {
         projectHandlers,
@@ -123,6 +126,7 @@ export const useAppState = () => {
 
     doingFileAction,
     lastFileAction,
+    invalidFileNodes,
 
     fileAction,
     fileEventPast,
@@ -182,6 +186,8 @@ export const useAppState = () => {
 
     filesReferenceData,
     htmlReferenceData,
+    isContentProgrammaticallyChanged,
+    isCodeTyping,
 
     projectHandlers,
     currentProjectFileHandle,

@@ -64,11 +64,11 @@ export default function WorkspaceTreeView() {
     recentProjectNames,
     recentProjectHandlers,
     recentProjectContexts,
+    invalidFileNodes,
   } = useAppState();
   const {
     addRunningActions,
     removeRunningActions,
-    invalidFileNodes,
     importProject,
   } = useContext(MainContext);
   const navigate = useNavigate();

@@ -10,6 +10,7 @@ import { useAppState } from "@_redux/useAppState";
 import { NodeActions } from "@_node/apis";
 import { RootNodeUid } from "@_constants/main";
 import { isPastingAllowed } from "../helpers";
+import { setIsContentProgrammaticallyChanged } from "@_redux/main/reference";
 
 export const useNodeActionHandlers = () => {
   const dispatch = useDispatch();
@@ -22,8 +23,7 @@ export const useNodeActionHandlers = () => {
     copiedNodeDisplayName,
     htmlReferenceData,
   } = useAppState();
-  const { monacoEditorRef, setIsContentProgrammaticallyChanged } =
-    useContext(MainContext);
+  const { monacoEditorRef } = useContext(MainContext);
 
   const onAddNode = useCallback(
     (actionName: string) => {
@@ -69,7 +69,7 @@ export const useNodeActionHandlers = () => {
         return;
       }
 
-      setIsContentProgrammaticallyChanged(true);
+      dispatch(setIsContentProgrammaticallyChanged(true));
       NodeActions.add({
         dispatch,
         actionName,
@@ -78,7 +78,7 @@ export const useNodeActionHandlers = () => {
         codeViewInstanceModel,
         selectedItems: selectedUids,
         formatCode,
-        fb: () => setIsContentProgrammaticallyChanged(false),
+        fb: () => dispatch(setIsContentProgrammaticallyChanged(false)),
       });
     },
     [nodeTree, focusedItem, htmlReferenceData, validNodeTree],
@@ -96,14 +96,14 @@ export const useNodeActionHandlers = () => {
       return;
     }
 
-    setIsContentProgrammaticallyChanged(true);
+    dispatch(setIsContentProgrammaticallyChanged(true));
     await NodeActions.cut({
       dispatch,
       nodeTree,
       selectedUids: selectedItems,
       codeViewInstanceModel,
       formatCode,
-      fb: () => setIsContentProgrammaticallyChanged(false),
+      fb: () => dispatch(setIsContentProgrammaticallyChanged(false)),
     });
   }, [selectedItems, nodeTree]);
   const onCopy = useCallback(async () => {
@@ -119,13 +119,13 @@ export const useNodeActionHandlers = () => {
       return;
     }
 
-    setIsContentProgrammaticallyChanged(true);
+    dispatch(setIsContentProgrammaticallyChanged(true));
     await NodeActions.copy({
       dispatch,
       nodeTree,
       selectedUids: selectedItems,
       codeViewInstanceModel,
-      cb: () => setIsContentProgrammaticallyChanged(false),
+      cb: () => dispatch(setIsContentProgrammaticallyChanged(false)),
     });
   }, [selectedItems, nodeTree]);
 
@@ -170,7 +170,7 @@ export const useNodeActionHandlers = () => {
         return;
       }
 
-      setIsContentProgrammaticallyChanged(true);
+      dispatch(setIsContentProgrammaticallyChanged(true));
       await NodeActions.paste({
         dispatch,
         nodeTree: validNodeTree,
@@ -178,7 +178,7 @@ export const useNodeActionHandlers = () => {
         codeViewInstanceModel,
         spanPaste,
         formatCode,
-        fb: () => setIsContentProgrammaticallyChanged(false),
+        fb: () => dispatch(setIsContentProgrammaticallyChanged(false)),
       });
     },
     [
@@ -212,14 +212,14 @@ export const useNodeActionHandlers = () => {
       return;
     }
 
-    setIsContentProgrammaticallyChanged(true);
+    dispatch(setIsContentProgrammaticallyChanged(true));
     NodeActions.remove({
       dispatch,
       nodeTree,
       selectedUids: selectedItems,
       codeViewInstanceModel,
       formatCode,
-      fb: () => setIsContentProgrammaticallyChanged(false),
+      fb: () => dispatch(setIsContentProgrammaticallyChanged(false)),
     });
   }, [selectedItems, nodeTree]);
   const onDuplicate = useCallback(() => {
@@ -235,14 +235,14 @@ export const useNodeActionHandlers = () => {
       return;
     }
 
-    setIsContentProgrammaticallyChanged(true);
+    dispatch(setIsContentProgrammaticallyChanged(true));
     NodeActions.duplicate({
       dispatch,
       nodeTree,
       selectedUids: selectedItems,
       codeViewInstanceModel,
       formatCode,
-      fb: () => setIsContentProgrammaticallyChanged(false),
+      fb: () => dispatch(setIsContentProgrammaticallyChanged(false)),
     });
   }, [selectedItems, nodeTree]);
   const onMove = useCallback(
@@ -267,7 +267,7 @@ export const useNodeActionHandlers = () => {
         return;
       }
 
-      setIsContentProgrammaticallyChanged(true);
+      dispatch(setIsContentProgrammaticallyChanged(true));
       NodeActions.move({
         dispatch,
         nodeTree,
@@ -277,7 +277,7 @@ export const useNodeActionHandlers = () => {
         position,
         codeViewInstanceModel,
         formatCode,
-        fb: () => setIsContentProgrammaticallyChanged(false),
+        fb: () => dispatch(setIsContentProgrammaticallyChanged(false)),
       });
     },
     [nodeTree],
@@ -297,7 +297,7 @@ export const useNodeActionHandlers = () => {
         return;
       }
 
-      setIsContentProgrammaticallyChanged(true);
+      dispatch(setIsContentProgrammaticallyChanged(true));
       NodeActions.rename({
         dispatch,
         actionName,
@@ -306,7 +306,7 @@ export const useNodeActionHandlers = () => {
         targetUid: focusedItem,
         codeViewInstanceModel,
         formatCode,
-        fb: () => setIsContentProgrammaticallyChanged(false),
+        fb: () => dispatch(setIsContentProgrammaticallyChanged(false)),
       });
     },
     [nodeTree, focusedItem],
@@ -324,14 +324,14 @@ export const useNodeActionHandlers = () => {
       return;
     }
 
-    setIsContentProgrammaticallyChanged(true);
+    dispatch(setIsContentProgrammaticallyChanged(true));
     NodeActions.group({
       dispatch,
       nodeTree: validNodeTree,
       selectedUids: selectedItems,
       codeViewInstanceModel,
       formatCode,
-      fb: () => setIsContentProgrammaticallyChanged(false),
+      fb: () => dispatch(setIsContentProgrammaticallyChanged(false)),
     });
   }, [selectedItems, validNodeTree]);
   const onUngroup = useCallback(() => {
@@ -347,14 +347,14 @@ export const useNodeActionHandlers = () => {
       return;
     }
 
-    setIsContentProgrammaticallyChanged(true);
+    dispatch(setIsContentProgrammaticallyChanged(true));
     NodeActions.ungroup({
       dispatch,
       nodeTree: validNodeTree,
       selectedUids: selectedItems,
       codeViewInstanceModel,
       formatCode,
-      fb: () => setIsContentProgrammaticallyChanged(false),
+      fb: () => dispatch(setIsContentProgrammaticallyChanged(false)),
     });
   }, [selectedItems, validNodeTree]);
 

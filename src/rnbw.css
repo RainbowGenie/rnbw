@@ -198,13 +198,13 @@ body.inheritCursors * {
 }
 
 .action-panel-wrapper {
-  width: 120px;
+  width: 10px;
   height: 100%;
   position: absolute;
 }
 
 .action-panel-wrapper > #ActionsPanel {
-  width: 240px;
+  width: 10px;
   transform: translateX(-300px);
 }
 
