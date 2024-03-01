@@ -2,6 +2,7 @@ import { THtmlReferenceData } from "@_types/main";
 
 export type TNode = {
   uid: TNodeUid;
+  sequencedUid: TNodeUid;
   parentUid: TNodeUid | null;
 
   displayName: string;
