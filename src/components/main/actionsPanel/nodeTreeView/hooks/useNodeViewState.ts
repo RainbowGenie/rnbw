@@ -22,6 +22,8 @@ export function useNodeViewState() {
     validNodeTree,
     nSelectedItems: selectedItems,
     nSelectedItemsObj: selectedItemsObj,
+    nodeTree,
+    lastNodesContents,
   } = useAppState();
   const { addRunningActions, removeRunningActions } = useContext(MainContext);
 
@@ -50,7 +52,6 @@ export function useNodeViewState() {
           return;
         }
       }
-
       dispatch(setSelectedNodeUids(_uids));
 
       // update file - WIP

@@ -51,7 +51,7 @@ const parseHtml = (content: string): THtmlParserResponse => {
           endOffset: 0,
         },
       },
-      sequencedUid: RootNodeUid,
+      sequenceContent: content,
     };
     const seedNodes: THtmlNode[] = [nodeTree[RootNodeUid]];
     let _uid = 0;
@@ -97,7 +97,10 @@ const parseHtml = (content: string): THtmlParserResponse => {
       });
       nodeTree[uid] = {
         uid,
-        sequencedUid: sequencedUid || uid,
+        sequenceContent: content.substring(
+          node.sourceCodeLocation.startOffset,
+          node.sourceCodeLocation.endOffset,
+        ),
         parentUid: parentUid,
 
         displayName: node.nodeName,

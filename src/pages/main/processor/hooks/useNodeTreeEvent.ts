@@ -65,6 +65,7 @@ export const useNodeTreeEvent = () => {
     needToSelectCode,
     nExpandedItems,
     nFocusedItem,
+    lastNodesContents,
     syncConfigs,
     webComponentOpen,
   } = useAppState();
@@ -91,6 +92,13 @@ export const useNodeTreeEvent = () => {
     // select nodes
     dispatch(selectNodeTreeNodes(selectedNodeUids));
   }, [selectedNodeUids]);
+
+  const getSubString = (content: string): string => {
+    const startIndex = content.indexOf("<");
+    const endIndex = content.indexOf(">", startIndex);
+    const substring = content.substring(startIndex, endIndex + 1);
+    return substring;
+  };
 
   useEffect(() => {
     isCurrentFileContentChanged.current = true;
@@ -156,82 +164,70 @@ export const useNodeTreeEvent = () => {
           const iframeHtml = iframeDoc.getElementsByTagName("html")[0];
           const updatedHtml = contentInApp;
           if (!iframeHtml || !updatedHtml) return;
-          console.log("TreeView-iframeHtml", iframeHtml);
-          console.log("TreeView-updatedHtml", updatedHtml);
-
+          const _prevHtml = iframeHtml.cloneNode(true);
           morphdom(iframeHtml, updatedHtml, {
             onBeforeElUpdated: function (fromEl, toEl) {
               //check if the node is script or style
-              // if (
-              //   fromEl.nodeName === "SCRIPT" ||
-              //   fromEl.nodeName === "LINK" ||
-              //   fromEl.nodeName === "STYLE"
-              // ) {
-              //   return false;
-              // }
-              // const fromElRnbwId = fromEl.getAttribute(StageNodeIdAttr);
-
-              //Preserve Node are the nodes style that don't need to be updated
-              //Such as the style of the iframe applied by the rnbw
-
-              // if (toEl.nodeName.includes("-")) return false;
-              // if (
-              //   syncConfigs?.matchIds &&
-              //   !!fromElRnbwId &&
-              //   syncConfigs.matchIds.includes(fromElRnbwId)
-              // ) {
-              //   return true;
-              // } else if (fromEl.isEqualNode(toEl)) {
-              //   return false;
-              // } else if (toEl.nodeName === "HTML") {
-              const fromElSequencedUid =
-                fromEl.getAttribute("data-sequenced-uid");
-              const toElSequencedUid = toEl.getAttribute("data-sequenced-uid");
-
-              if (fromEl.tagName === "HTML" && toEl.tagName === "HTML") {
-                //copy the attributes
-                for (let i = 0; i < fromEl.attributes.length; i++) {
-                  toEl.setAttribute(
-                    fromEl.attributes[i].name,
-                    fromEl.attributes[i].value,
-                  );
-                }
-                //     if (fromEl.isEqualNode(toEl)) return false;
-                //   }
-                //   return true;
-                // },
-                // onElUpdated: function (el) {
-                //   if (el.nodeName === "HTML") {
-                //     //copy the attributes
-                //     for (let i = 0; i < el.attributes.length; i++) {
-                //       iframeHtml.setAttribute(
-                //         el.attributes[i].name,
-                //         el.attributes[i].value,
-                //       );
-                //     }
-                //   }
-                // },
-                // onBeforeNodeDiscarded: function (node: Node) {
-                //   const elementNode = node as Element;
-                //   const ifPreserveNode = elementNode.getAttribute
-                //     ? elementNode.getAttribute(PreserveRnbwNode)
-                //     : false;
-                //   if (ifPreserveNode) {
-                //     return false;
-                //   }
-                //   // script and style should not be discarded
-                //   if (
-                //     elementNode.nodeName === "SCRIPT" ||
-                //     elementNode.nodeName === "LINK" ||
-                //     elementNode.nodeName === "STYLE"
-                //   ) {
-              } else if (toEl.nodeName.includes("-")) return false;
-              else if (fromElSequencedUid === toElSequencedUid) {
+              if (
+                fromEl.nodeName === "SCRIPT" ||
+                fromEl.nodeName === "LINK" ||
+                fromEl.nodeName === "STYLE"
+              ) {
                 return false;
               }
+              const fromElRnbwId = fromEl.getAttribute(StageNodeIdAttr);
 
+              if (toEl.nodeName.includes("-")) return false;
+              if (
+                syncConfigs?.matchIds &&
+                !!fromElRnbwId &&
+                syncConfigs.matchIds.includes(fromElRnbwId)
+              ) {
+                return true;
+              } else if (fromEl.isEqualNode(toEl)) {
+                return false;
+              } else if (toEl.nodeName === "HTML") {
+                //copy the attributes
+                for (let i = 0; i < _prevHtml.attributes.length; i++) {
+                  toEl.setAttribute(
+                    _prevHtml.attributes[i].name,
+                    _prevHtml.attributes[i].value,
+                  );
+                }
+                if (_prevHtml.isEqualNode(toEl)) return false;
+              }
               return true;
             },
+            // onElUpdated: function (el) {
+            //   if (el.nodeName === "HTML") {
+            //     //copy the attributes
+            //     for (let i = 0; i < el.attributes.length; i++) {
+            //       iframeHtml.setAttribute(
+            //         el.attributes[i].name,
+            //         el.attributes[i].value,
+            //       );
+            //     }
+            //   }
+            // },
+            // onBeforeNodeDiscarded: function (node: Node) {
+            //   const elementNode = node as Element;
+            //   const ifPreserveNode = elementNode.getAttribute
+            //     ? elementNode.getAttribute(PreserveRnbwNode)
+            //     : false;
+            //   if (ifPreserveNode) {
+            //     return false;
+            //   }
+            //   // script and style should not be discarded
+            //   if (
+            //     elementNode.nodeName === "SCRIPT" ||
+            //     elementNode.nodeName === "LINK" ||
+            //     elementNode.nodeName === "STYLE"
+            //   ) {
+            //     return false;
+            //   }
+
+            //   return true;
+            // },
           });
         }
       }
@@ -266,9 +262,25 @@ export const useNodeTreeEvent = () => {
       const validExpandedItems = nExpandedItems.filter(
         (uid) => _validNodeTree[uid] && _validNodeTree[uid].isEntity === false,
       );
-      const needToExpandItems: TNodeUid[] = isSelectedNodeUidsChanged.current
-        ? getNeedToExpandNodeUids(_validNodeTree, selectedNodeUids)
-        : [];
+      // const needToExpandItems: TNodeUid[] = getNeedToExpandNodeUids(
+      //   _validNodeTree,
+      //   selectedNodeUids,
+      // );
+      const lastNodeUids = [];
+      for (let uid in _validNodeTree) {
+        for (let lastNodeUid in lastNodesContents) {
+          if (
+            getSubString(lastNodesContents[lastNodeUid]) ==
+            getSubString(_validNodeTree[uid].sequenceContent)
+          ) {
+            lastNodeUids.push(uid);
+          }
+        }
+      }
+      const needToExpandItems = getNeedToExpandNodeUids(
+        _validNodeTree,
+        lastNodeUids,
+      );
       dispatch(
         setExpandedNodeTreeNodes([...validExpandedItems, ...needToExpandItems]),
       );

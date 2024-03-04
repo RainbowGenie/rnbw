@@ -1,6 +1,10 @@
 import React, { useMemo } from "react";
 
-import { ControlledTreeEnvironment, Tree } from "react-complex-tree";
+import {
+  ControlledTreeEnvironment,
+  Tree,
+  UncontrolledTreeEnvironment,
+} from "react-complex-tree";
 
 import { RootNodeUid } from "@_constants/main";
 
@@ -32,9 +36,6 @@ export default function TreeView(props: TreeViewProps) {
     };
     return state;
   }, [info.id, focusedItem, expandedItems, selectedItems]);
-
-  console.log("TreeView-data", data);
-  console.log("TreeView-viewState", viewState);
 
   return (
     <div style={{ width, height }}>
