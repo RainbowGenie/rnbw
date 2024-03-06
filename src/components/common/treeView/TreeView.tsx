@@ -1,10 +1,6 @@
 import React, { useMemo } from "react";
 
-import {
-  ControlledTreeEnvironment,
-  Tree,
-  UncontrolledTreeEnvironment,
-} from "react-complex-tree";
+import { ControlledTreeEnvironment, Tree } from "react-complex-tree";
 
 import { RootNodeUid } from "@_constants/main";
 

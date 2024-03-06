@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
 import morphdom from "morphdom";
 import { useDispatch } from "react-redux";
@@ -28,6 +28,7 @@ import {
   focusNodeTreeNode,
   selectNodeTreeNodes,
   setExpandedNodeTreeNodes,
+  setLastNodesContents,
   setNeedToSelectCode,
   setNeedToSelectNodePaths,
   setNeedToSelectNodeUids,
@@ -46,6 +47,7 @@ import {
   markChangedFolders,
 } from "../helpers";
 import { setLoadingFalse, setLoadingTrue } from "@_redux/main/processor";
+import { RootNodeUid } from "@_constants/main";
 
 export const useNodeTreeEvent = () => {
   const dispatch = useDispatch();
@@ -99,7 +101,7 @@ export const useNodeTreeEvent = () => {
     const substring = content.substring(startIndex, endIndex + 1);
     return substring;
   };
-
+  const [newSequenceContent, setNewSequenceContent] = useState<string>("");
   useEffect(() => {
     isCurrentFileContentChanged.current = true;
     // validate
@@ -164,7 +166,7 @@ export const useNodeTreeEvent = () => {
           const iframeHtml = iframeDoc.getElementsByTagName("html")[0];
           const updatedHtml = contentInApp;
           if (!iframeHtml || !updatedHtml) return;
-          const _prevHtml = iframeHtml.cloneNode(true);
+
           morphdom(iframeHtml, updatedHtml, {
             onBeforeElUpdated: function (fromEl, toEl) {
               //check if the node is script or style
@@ -188,51 +190,64 @@ export const useNodeTreeEvent = () => {
                 return false;
               } else if (toEl.nodeName === "HTML") {
                 //copy the attributes
-                for (let i = 0; i < _prevHtml.attributes.length; i++) {
+                for (let i = 0; i < fromEl.attributes.length; i++) {
                   toEl.setAttribute(
-                    _prevHtml.attributes[i].name,
-                    _prevHtml.attributes[i].value,
+                    fromEl.attributes[i].name,
+                    fromEl.attributes[i].value,
                   );
                 }
-                if (_prevHtml.isEqualNode(toEl)) return false;
+                if (fromEl.isEqualNode(toEl)) return false;
               }
               return true;
             },
-            // onElUpdated: function (el) {
-            //   if (el.nodeName === "HTML") {
-            //     //copy the attributes
-            //     for (let i = 0; i < el.attributes.length; i++) {
-            //       iframeHtml.setAttribute(
-            //         el.attributes[i].name,
-            //         el.attributes[i].value,
-            //       );
-            //     }
-            //   }
-            // },
-            // onBeforeNodeDiscarded: function (node: Node) {
-            //   const elementNode = node as Element;
-            //   const ifPreserveNode = elementNode.getAttribute
-            //     ? elementNode.getAttribute(PreserveRnbwNode)
-            //     : false;
-            //   if (ifPreserveNode) {
-            //     return false;
-            //   }
-            //   // script and style should not be discarded
-            //   if (
-            //     elementNode.nodeName === "SCRIPT" ||
-            //     elementNode.nodeName === "LINK" ||
-            //     elementNode.nodeName === "STYLE"
-            //   ) {
-            //     return false;
-            //   }
+            onElUpdated: function (el) {
+              if (el.nodeName === "HTML") {
+                //copy the attributes
+                for (let i = 0; i < el.attributes.length; i++) {
+                  iframeHtml.setAttribute(
+                    el.attributes[i].name,
+                    el.attributes[i].value,
+                  );
+                }
+              }
+            },
+            onBeforeNodeDiscarded: function (node: Node) {
+              const elementNode = node as Element;
+              const ifPreserveNode = elementNode.getAttribute
+                ? elementNode.getAttribute(PreserveRnbwNode)
+                : false;
+              if (ifPreserveNode) {
+                return false;
+              }
+              // script and style should not be discarded
+              if (
+                elementNode.nodeName === "SCRIPT" ||
+                elementNode.nodeName === "LINK" ||
+                elementNode.nodeName === "STYLE"
+              ) {
+                return false;
+              }
 
-            //   return true;
-            // },
+              return true;
+            },
           });
         }
       }
     }
 
+    if (validNodeTree[selectedNodeUids[0]]) {
+      const parentUid = validNodeTree[selectedNodeUids[0]].parentUid
+        ? validNodeTree[selectedNodeUids[0]].parentUid
+        : RootNodeUid;
+      const selectedNodeSequenceContent =
+        validNodeTree[selectedNodeUids[0]].sequenceContent;
+      const parentNodeSequenceContent =
+        validNodeTree[parentUid!].sequenceContent;
+      setNewSequenceContent(
+        parentNodeSequenceContent.replace(selectedNodeSequenceContent, ""),
+      );
+      dispatch(setLastNodesContents(newSequenceContent));
+    }
     // sync node-tree
     dispatch(setNodeTree(nodeTree));
     const _validNodeTree = getValidNodeTree(nodeTree);
@@ -262,16 +277,16 @@ export const useNodeTreeEvent = () => {
       const validExpandedItems = nExpandedItems.filter(
         (uid) => _validNodeTree[uid] && _validNodeTree[uid].isEntity === false,
       );
-      // const needToExpandItems: TNodeUid[] = getNeedToExpandNodeUids(
-      //   _validNodeTree,
-      //   selectedNodeUids,
-      // );
+      // const needToExpandItems: TNodeUid[] = isSelectedNodeUidsChanged.current
+      //   ? getNeedToExpandNodeUids(_validNodeTree, selectedNodeUids)
+      //   : [];
+      // console.log("TreeView-lastNodesContents", lastNodesContents);
       const lastNodeUids = [];
       for (let uid in _validNodeTree) {
         for (let lastNodeUid in lastNodesContents) {
           if (
-            getSubString(lastNodesContents[lastNodeUid]) ==
-            getSubString(_validNodeTree[uid].sequenceContent)
+            lastNodesContents[lastNodeUid] ==
+            _validNodeTree[uid].sequenceContent
           ) {
             lastNodeUids.push(uid);
           }
@@ -281,9 +296,7 @@ export const useNodeTreeEvent = () => {
         _validNodeTree,
         lastNodeUids,
       );
-      dispatch(
-        setExpandedNodeTreeNodes([...validExpandedItems, ...needToExpandItems]),
-      );
+      dispatch(setExpandedNodeTreeNodes([...needToExpandItems]));
 
       if (!isSelectedNodeUidsChanged.current) {
         // this change is from 'node actions' or 'typing in code-view'
@@ -329,7 +342,7 @@ export const useNodeTreeEvent = () => {
     }
     dispatch(setLoadingFalse());
     removeRunningActions(["processor-update"]);
-  }, [currentFileContent, currentFileUid]);
+  }, [currentFileContent, currentFileUid, newSequenceContent]);
 
   // expand nodes that need to be expanded when it's just select-event
   useEffect(() => {

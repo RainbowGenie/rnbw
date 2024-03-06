@@ -19,9 +19,7 @@ const nodeTreeReducerInitialState: TNodeTreeReducerState = {
     selectedItems: [],
     selectedItemsObj: {},
   },
-
   lastNodesContents: [],
-
   hoveredNodeUid: "",
   copiedNodeDisplayName: [],
 };
@@ -155,11 +153,10 @@ const nodeTreeSlice = createSlice({
     },
     setLastNodesContents(state, action: PayloadAction<string>) {
       const newNodeContent = action.payload;
-      if (state.lastNodesContents.includes(newNodeContent)) {
-        state.lastNodesContents = [...state.lastNodesContents];
-      } else {
-        state.lastNodesContents = [...state.lastNodesContents, newNodeContent];
-      }
+      state.lastNodesContents =
+        state.lastNodesContents.indexOf(newNodeContent) !== -1
+          ? [...state.lastNodesContents]
+          : [...state.lastNodesContents, newNodeContent];
     },
   },
 });

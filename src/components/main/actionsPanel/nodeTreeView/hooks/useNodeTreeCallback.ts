@@ -14,8 +14,8 @@ import { useDispatch } from "react-redux";
 export const useNodeTreeCallback = (
   isDragging: React.MutableRefObject<boolean>,
 ) => {
-  const dispatch = useDispatch();
   const { validNodeTree, htmlReferenceData, lastNodesContents } = useAppState();
+  const dispatch = useDispatch();
 
   const { onMove } = useNodeActionHandlers();
   const { cb_focusNode, cb_selectNode, cb_expandNode, cb_collapseNode } =

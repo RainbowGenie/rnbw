@@ -95,6 +95,7 @@ const parseHtml = (content: string): THtmlParserResponse => {
         name: "data-sequenced-uid",
         value: sequencedUid,
       });
+
       nodeTree[uid] = {
         uid,
         sequenceContent: content.substring(
