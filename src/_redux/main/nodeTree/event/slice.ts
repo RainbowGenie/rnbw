@@ -29,7 +29,6 @@ const nodeEventSlice = createSlice({
       if (
         !selectedNodeUids.every((item) => state.selectedNodeUids.includes(item))
       ) {
-        console.log("TreeView-asdf", selectedNodeUids);
         state.selectedNodeUids = [...selectedNodeUids];
       }
     },
