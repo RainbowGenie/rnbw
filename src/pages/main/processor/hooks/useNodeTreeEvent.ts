@@ -298,7 +298,6 @@ export const useNodeTreeEvent = () => {
       );
       dispatch(
         setExpandedNodeTreeNodes([...validExpandedItems, ...needToExpandItems]),
-      );
 
       if (!isSelectedNodeUidsChanged.current) {
         // this change is from 'node actions' or 'typing in code-view'
