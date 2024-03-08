@@ -63,7 +63,6 @@ export const useMouseEvents = ({
   const onMouseLeave = (e: MouseEvent) => {
     dispatch(setHoveredNodeUid(""));
   };
-
   // click, dblclick handlers
   const onClick = useCallback((e: MouseEvent) => {
     dispatch(setActivePanel("stage"));
@@ -95,7 +94,6 @@ export const useMouseEvents = ({
             }
           }
         }
-
         !same && dispatch(setSelectedNodeUids(uids));
       })();
 
@@ -127,6 +125,12 @@ export const useMouseEvents = ({
           codeViewInstanceModel,
           formatCode,
         });
+
+        // dispatch(
+        //   setLastNodesContents(
+        //     validNodeTree[contentEditableUid].sequenceContent,
+        //   ),
+        // );
       }
     }
   }, []);
