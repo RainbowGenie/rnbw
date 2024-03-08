@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 
 import { DraggingPosition, TreeItem, TreeItemIndex } from "react-complex-tree";
 
@@ -15,13 +15,7 @@ import { RootNodeUid } from "@_constants/main";
 export const useNodeTreeCallback = (
   isDragging: React.MutableRefObject<boolean>,
 ) => {
-  const {
-    validNodeTree,
-    htmlReferenceData,
-    lastNodesContents,
-    selectedNodeUids,
-  } = useAppState();
-  const [newSequenceContent, setNewSequenceContent] = useState<string>("");
+  const { validNodeTree, htmlReferenceData, selectedNodeUids } = useAppState();
   const dispatch = useDispatch();
 
   const { onMove } = useNodeActionHandlers();
@@ -74,30 +68,19 @@ export const useNodeTreeCallback = (
         validNodeTree[selectedNodeUids[0]].sequenceContent;
       const parentNodeSequenceContent =
         validNodeTree[parentUid!].sequenceContent;
-      console.log(
-        "TreeView-parentNodeSequenceContent",
-        parentNodeSequenceContent,
-      );
-      console.log(
-        "TreeView-selectedNodeSequenceContent",
-        selectedNodeSequenceContent,
-      );
-      setNewSequenceContent(
-        parentNodeSequenceContent.replace(selectedNodeSequenceContent, ""),
-      );
       dispatch(
         setLastNodesContents(
           parentNodeSequenceContent.replace(selectedNodeSequenceContent, ""),
         ),
       );
-
-      onMove({
-        selectedUids: validUids,
-        targetUid: targetUid as TNodeUid,
-        isBetween,
-        position,
-      });
     }
+
+    onMove({
+      selectedUids: validUids,
+      targetUid: targetUid as TNodeUid,
+      isBetween,
+      position,
+    });
     isDragging.current = false;
   };
 
