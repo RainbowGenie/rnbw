@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 
 import { DraggingPosition, TreeItem, TreeItemIndex } from "react-complex-tree";
 
@@ -10,11 +10,18 @@ import { useNodeActionHandlers } from "./useNodeActionHandlers";
 import { useNodeViewState } from "./useNodeViewState";
 import { setLastNodesContents } from "@_redux/main/nodeTree";
 import { useDispatch } from "react-redux";
+import { RootNodeUid } from "@_constants/main";
 
 export const useNodeTreeCallback = (
   isDragging: React.MutableRefObject<boolean>,
 ) => {
-  const { validNodeTree, htmlReferenceData, lastNodesContents } = useAppState();
+  const {
+    validNodeTree,
+    htmlReferenceData,
+    lastNodesContents,
+    selectedNodeUids,
+  } = useAppState();
+  const [newSequenceContent, setNewSequenceContent] = useState<string>("");
   const dispatch = useDispatch();
 
   const { onMove } = useNodeActionHandlers();
@@ -59,13 +66,38 @@ export const useNodeTreeCallback = (
 
     if (target.parentItem === "ROOT") return;
 
-    onMove({
-      selectedUids: validUids,
-      targetUid: targetUid as TNodeUid,
-      isBetween,
-      position,
-    });
+    if (validNodeTree[selectedNodeUids[0]]) {
+      const parentUid = validNodeTree[selectedNodeUids[0]].parentUid
+        ? validNodeTree[selectedNodeUids[0]].parentUid
+        : RootNodeUid;
+      const selectedNodeSequenceContent =
+        validNodeTree[selectedNodeUids[0]].sequenceContent;
+      const parentNodeSequenceContent =
+        validNodeTree[parentUid!].sequenceContent;
+      console.log(
+        "TreeView-parentNodeSequenceContent",
+        parentNodeSequenceContent,
+      );
+      console.log(
+        "TreeView-selectedNodeSequenceContent",
+        selectedNodeSequenceContent,
+      );
+      setNewSequenceContent(
+        parentNodeSequenceContent.replace(selectedNodeSequenceContent, ""),
+      );
+      dispatch(
+        setLastNodesContents(
+          parentNodeSequenceContent.replace(selectedNodeSequenceContent, ""),
+        ),
+      );
 
+      onMove({
+        selectedUids: validUids,
+        targetUid: targetUid as TNodeUid,
+        isBetween,
+        position,
+      });
+    }
     isDragging.current = false;
   };
 
