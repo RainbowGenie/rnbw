@@ -39,13 +39,14 @@ export default function CodeView() {
 
     editingNodeUidInCodeView,
     isCodeTyping,
+    codeErrors,
   } = useAppState();
   const { monacoEditorRef } = useContext(MainContext);
 
   const {
     handleEditorDidMount,
     handleOnChange,
-
+    handleKeyDown,
     theme,
 
     language,
@@ -56,6 +57,8 @@ export default function CodeView() {
     codeSelection,
   } = useEditor();
   useCmdk();
+
+  monacoEditorRef.current?.onKeyDown(handleKeyDown);
 
   const onPanelClick = useCallback(() => {
     dispatch(setActivePanel("code"));
@@ -111,6 +114,7 @@ export default function CodeView() {
       },
       1,
     );
+    
   }, [validNodeTree, nFocusedItem, activePanel]);
 
   useEffect(() => {
@@ -206,7 +210,7 @@ export default function CodeView() {
             zIndex: 999,
             overflow: "hidden",
           }}
-          className="border-left background-primary"
+          className={`border-left background-primary ${codeErrors && "outline border outline-negative"}`}
           onClick={onPanelClick}
         >
           <Editor
@@ -235,5 +239,6 @@ export default function CodeView() {
     language,
     currentFileContent,
     editorConfigs,
+    codeErrors,
   ]);
 }

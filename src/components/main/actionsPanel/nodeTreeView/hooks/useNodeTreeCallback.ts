@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 import { DraggingPosition, TreeItem, TreeItemIndex } from "react-complex-tree";
 
 import { getValidNodeUids } from "@_node/helpers";
@@ -8,26 +6,21 @@ import { useAppState } from "@_redux/useAppState";
 
 import { useNodeActionHandlers } from "./useNodeActionHandlers";
 import { useNodeViewState } from "./useNodeViewState";
-import { setLastNodesContents } from "@_redux/main/nodeTree";
-import { useDispatch } from "react-redux";
-import { RootNodeUid } from "@_constants/main";
 
 export const useNodeTreeCallback = (
   isDragging: React.MutableRefObject<boolean>,
 ) => {
-  const { validNodeTree, htmlReferenceData, selectedNodeUids } = useAppState();
-  const dispatch = useDispatch();
+  const { validNodeTree, htmlReferenceData } = useAppState();
 
   const { onMove } = useNodeActionHandlers();
   const { cb_focusNode, cb_selectNode, cb_expandNode, cb_collapseNode } =
     useNodeViewState();
 
   const onSelectItems = (items: TreeItemIndex[]) => {
-    dispatch(setLastNodesContents(validNodeTree[items[0]].sequenceContent));
     cb_selectNode(items as TNodeUid[]);
   };
-  const onFocusItem = (item: TreeItem) => {
-    cb_focusNode(item.index as TNodeUid);
+  const onFocusItem = () => {
+    cb_focusNode();
   };
   const onExpandItem = (item: TreeItem) => {
     cb_expandNode(item.index as TNodeUid);
@@ -60,27 +53,13 @@ export const useNodeTreeCallback = (
 
     if (target.parentItem === "ROOT") return;
 
-    if (validNodeTree[selectedNodeUids[0]]) {
-      const parentUid = validNodeTree[selectedNodeUids[0]].parentUid
-        ? validNodeTree[selectedNodeUids[0]].parentUid
-        : RootNodeUid;
-      const selectedNodeSequenceContent =
-        validNodeTree[selectedNodeUids[0]].sequenceContent;
-      const parentNodeSequenceContent =
-        validNodeTree[parentUid!].sequenceContent;
-      dispatch(
-        setLastNodesContents(
-          parentNodeSequenceContent.replace(selectedNodeSequenceContent, ""),
-        ),
-      );
-    }
-
     onMove({
       selectedUids: validUids,
       targetUid: targetUid as TNodeUid,
       isBetween,
       position,
     });
+
     isDragging.current = false;
   };
 

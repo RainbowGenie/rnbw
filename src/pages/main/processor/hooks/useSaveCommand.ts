@@ -11,14 +11,22 @@ import { useAppState } from "@_redux/useAppState";
 
 import { saveFileContent } from "../helpers";
 import { setCurrentCommand } from "@_redux/main/cmdk";
-import { debounce } from "lodash";
 import { setLoadingFalse, setLoadingTrue } from "@_redux/main/processor";
+import { debounce } from "@_pages/main/helper";
+import { html_beautify } from "js-beautify";
 
 export const useSaveCommand = () => {
   const dispatch = useDispatch();
-  const { project, fileTree, currentFileUid, currentCommand, fileHandlers } =
-    useAppState();
-  const { addRunningActions, removeRunningActions } = useContext(MainContext);
+  const {
+    project,
+    fileTree,
+    currentFileUid,
+    currentCommand,
+    fileHandlers,
+    formatCode,
+  } = useAppState();
+  const { addRunningActions, removeRunningActions, monacoEditorRef } =
+    useContext(MainContext);
 
   useEffect(() => {
     if (!currentCommand) return;
@@ -29,6 +37,7 @@ export const useSaveCommand = () => {
         break;
       case "SaveAll":
         onSaveProject();
+        break;
       default:
         return;
     }
@@ -44,8 +53,16 @@ export const useSaveCommand = () => {
     addRunningActions(["processor-save-currentFile"]);
     if (fileData.changed) {
       try {
+        const codeViewInstance = monacoEditorRef.current;
+        const codeViewInstanceModel = codeViewInstance?.getModel();
+        if (formatCode && codeViewInstanceModel) {
+          const code = html_beautify(codeViewInstanceModel.getValue());
+          codeViewInstanceModel.setValue(code);
+        }
         await saveFileContent(project, fileHandlers, currentFileUid, fileData);
-      } catch (err) {}
+      } catch (err) {
+        console.error(err);
+      }
 
       while (file) {
         file.data.changed = false;

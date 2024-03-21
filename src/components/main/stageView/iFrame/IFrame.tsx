@@ -17,17 +17,10 @@ import { markSelectedElements } from "./helpers";
 import { useCmdk, useMouseEvents, useSyncNode } from "./hooks";
 import { setLoadingFalse, setLoadingTrue } from "@_redux/main/processor";
 import { useZoom } from "./hooks/useZoom";
-import { setLastNodesContents } from "@_redux/main/nodeTree";
 
 export const IFrame = () => {
   const dispatch = useDispatch();
-  const {
-    needToReloadIframe,
-    iframeSrc,
-    project,
-    validNodeTree,
-    selectedNodeUids,
-  } = useAppState();
+  const { needToReloadIframe, iframeSrc, project } = useAppState();
   const { iframeRefRef, setIframeRefRef } = useContext(MainContext);
 
   const [iframeRefState, setIframeRefState] =
@@ -89,25 +82,18 @@ export const IFrame = () => {
           headNode.appendChild(js);
 
           // define event handlers
-          htmlNode.addEventListener("mouseenter", (e: MouseEvent) => {
-            onMouseEnter(e);
+          htmlNode.addEventListener("mouseenter", () => {
+            onMouseEnter();
           });
           htmlNode.addEventListener("mousemove", (e: MouseEvent) => {
             onMouseMove(e);
           });
-          htmlNode.addEventListener("mouseleave", (e: MouseEvent) => {
-            onMouseLeave(e);
+          htmlNode.addEventListener("mouseleave", () => {
+            onMouseLeave();
           });
 
           htmlNode.addEventListener("click", (e: MouseEvent) => {
             e.preventDefault();
-
-            validNodeTree[selectedNodeUids[0]] &&
-              dispatch(
-                setLastNodesContents(
-                  validNodeTree[selectedNodeUids[0]].sequenceContent,
-                ),
-              );
             onClick(e);
           });
           htmlNode.addEventListener("dblclick", (e: MouseEvent) => {

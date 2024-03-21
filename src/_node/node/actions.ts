@@ -55,27 +55,29 @@ const add = ({
   cb?: () => void;
 }) => {
   try {
+    const commentTag = "!--...--";
     const tagName = actionName.slice(
       AddNodeActionPrefix.length + 2,
       actionName.length - 1,
     );
     const htmlReferenceData = referenceData as THtmlReferenceData;
-    const HTMLElement = htmlReferenceData.elements[tagName];
+    const HTMLElement =
+      htmlReferenceData.elements[tagName === commentTag ? "comment" : tagName];
 
-    let openingTag = HTMLElement.Tag;
-    if (HTMLElement.Attributes) {
-      const tagArray = openingTag.split("");
-      tagArray.splice(tagArray.length - 1, 0, ` ${HTMLElement.Attributes}`);
-      openingTag = tagArray.join("");
+    let openingTag = HTMLElement?.Tag || "";
+    if (HTMLElement?.Attributes) {
+      openingTag = openingTag.replace(">", ` ${HTMLElement.Attributes}>`);
     }
     const closingTag = `</${tagName}>`;
 
-    const tagContent = !!HTMLElement.Content ? HTMLElement.Content : "";
+    const tagContent = HTMLElement?.Content || "";
 
     const codeViewText =
-      HTMLElement.Contain === "None"
-        ? openingTag
-        : `${openingTag}${tagContent}${closingTag}`;
+      tagName === commentTag
+        ? tagContent
+        : HTMLElement?.Contain === "None"
+          ? openingTag
+          : `${openingTag}${tagContent}${closingTag}`;
 
     const sortedUids = sortUidsByMaxEndIndex(selectedItems, nodeTree);
     sortedUids.forEach((uid) => {
@@ -122,7 +124,7 @@ const add = ({
     fb && fb();
   }
 };
-const remove = ({
+function remove({
   dispatch,
   nodeTree,
   selectedUids,
@@ -138,7 +140,7 @@ const remove = ({
   formatCode: boolean;
   fb?: () => void;
   cb?: () => void;
-}) => {
+}) {
   try {
     const sortedUids = sortUidsByMaxEndIndex(selectedUids, nodeTree);
     sortedUids.forEach((uid) => {
@@ -166,7 +168,7 @@ const remove = ({
     fb && fb();
     LogAllow && console.log(err);
   }
-};
+}
 
 const cut = async ({
   dispatch,
@@ -228,7 +230,10 @@ const cut = async ({
     })();
     dispatch(setNeedToSelectNodePaths(needToSelectNodePaths));
 
-    const code = html_beautify(codeViewInstanceModel.getValue());
+    const code = formatCode
+      ? html_beautify(codeViewInstanceModel.getValue())
+      : codeViewInstanceModel.getValue();
+
     codeViewInstanceModel.setValue(code);
 
     cb && cb();
@@ -307,9 +312,6 @@ const paste = async ({
   try {
     let code = await window.navigator.clipboard.readText();
     if (spanPaste) code = `<span>${code}</span>`;
-    else {
-      code = `<div>${code}</div>`;
-    }
     pasteCode({
       nodeTree,
       focusedItem: targetUid,
@@ -570,23 +572,22 @@ const rename = ({
     const htmlReferenceData = referenceData as THtmlReferenceData;
     const HTMLElement = htmlReferenceData.elements[tagName];
 
-    let openingTag = HTMLElement.Tag;
-    if (HTMLElement.Attributes) {
+    let openingTag = HTMLElement?.Tag;
+    if (HTMLElement?.Attributes) {
       const tagArray = openingTag.split("");
-      tagArray.splice(tagArray.length - 1, 0, ` ${HTMLElement.Attributes}`);
+      tagArray.splice(tagArray.length - 1, 0, ` ${HTMLElement?.Attributes}`);
       openingTag = tagArray.join("");
     }
     const closingTag = `</${tagName}>`;
 
-    const tagContent = !!HTMLElement.Content ? HTMLElement.Content : "";
-
     // **********************************************************
     // will replace with pureTagCode when we will not want to keep origianl innerHtml of the target node
     // **********************************************************
-    const pureTagCode =
-      HTMLElement.Contain === "None"
-        ? openingTag
-        : `${openingTag}${tagContent}${closingTag}`;
+    // const tagContent = HTMLElement.Content ? HTMLElement.Content : "";
+    // const pureTagCode =
+    //   HTMLElement.Contain === "None"
+    //     ? openingTag
+    //     : `${openingTag}${tagContent}${closingTag}`;
 
     const focusedNode = nodeTree[targetUid];
 
@@ -672,7 +673,7 @@ const group = ({
       nodeTree[sortedUids[0]].data.sourceCodeLocation;
     const edit = {
       range: new Range(startLine, startCol, startLine, startCol),
-      text: `<div>${code}</div>`,
+      text: code,
     };
     codeViewInstanceModel.applyEdits([edit]);
 

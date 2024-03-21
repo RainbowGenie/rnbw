@@ -43,7 +43,6 @@ export const useAppState = () => {
           selectedItems: nSelectedItems,
           selectedItemsObj: nSelectedItemsObj,
         },
-        lastNodesContents,
         hoveredNodeUid,
         copiedNodeDisplayName,
       },
@@ -60,7 +59,11 @@ export const useAppState = () => {
         syncConfigs,
         webComponentOpen,
       },
-      codeView: { editingNodeUid: editingNodeUidInCodeView, codeViewTabSize },
+      codeView: {
+        editingNodeUid: editingNodeUidInCodeView,
+        codeViewTabSize,
+        codeErrors,
+      },
       processor: {
         doingAction,
         navigatorDropdownType,
@@ -69,6 +72,7 @@ export const useAppState = () => {
         clipboardData,
         showActionsPanel,
         showCodeView,
+        showFilePanel,
         autoSave,
         formatCode,
         didUndo,
@@ -146,7 +150,6 @@ export const useAppState = () => {
     nExpandedItemsObj,
     nSelectedItems,
     nSelectedItemsObj,
-    lastNodesContents,
     hoveredNodeUid,
     copiedNodeDisplayName,
 
@@ -167,6 +170,7 @@ export const useAppState = () => {
 
     editingNodeUidInCodeView,
     codeViewTabSize,
+    codeErrors,
 
     doingAction,
 
@@ -178,6 +182,7 @@ export const useAppState = () => {
 
     showActionsPanel,
     showCodeView,
+    showFilePanel,
 
     autoSave,
     formatCode,

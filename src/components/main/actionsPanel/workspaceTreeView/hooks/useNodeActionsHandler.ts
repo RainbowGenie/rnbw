@@ -12,9 +12,7 @@ import {
 } from "@_constants/main";
 import { FileActions } from "@_node/apis";
 import {
-  _createIDBDirectory,
   _path,
-  _writeIDBFile,
   confirmAlert,
   FileSystemApis,
   getTargetHandler,
@@ -95,7 +93,6 @@ export const useNodeActionsHandler = () => {
           valid: false,
           ext,
         },
-        sequenceContent: "",
       };
       node.children.unshift(tmpNode.uid);
       _fileTree[tmpNode.uid] = tmpNode;
@@ -122,7 +119,8 @@ export const useNodeActionsHandler = () => {
       fb: () => {
         LogAllow && console.error("error while removing file system");
       },
-      cb: (allDone: boolean) => {
+      cb: (allDone: boolean | undefined) => {
+
         LogAllow &&
           console.log(
             allDone ? "all is successfully removed" : "some is not removed",
@@ -200,7 +198,8 @@ export const useNodeActionsHandler = () => {
       fb: () => {
         LogAllow && console.error("error while pasting file system");
       },
-      cb: (allDone: boolean) => {
+      cb: (allDone: boolean | undefined) => {
+
         LogAllow &&
           console.log(
             allDone ? "all is successfully pasted" : "some is not pasted",
@@ -277,7 +276,8 @@ export const useNodeActionsHandler = () => {
       fb: () => {
         LogAllow && console.error("error while duplicating file system");
       },
-      cb: (allDone: boolean) => {
+      cb: (allDone: boolean | unknown) => {
+
         LogAllow &&
           console.log(
             allDone
@@ -364,9 +364,9 @@ export const useNodeActionsHandler = () => {
           fb: () => {
             LogAllow && console.error("error while renaming file system");
           },
-          cb: (done: boolean) => {
+          cb: (allDone: boolean|undefined) => {
             LogAllow &&
-              console.log(done ? "successfully renamed" : "not renamed");
+              console.log(allDone ? "successfully renamed" : "not renamed");
             // add to event history
             const _fileAction: TFileAction = {
               action: "rename",
@@ -396,9 +396,9 @@ export const useNodeActionsHandler = () => {
           fb: () => {
             LogAllow && console.error("error while creating file system");
           },
-          cb: (done: boolean) => {
+          cb: (allDone: boolean | undefined) => {
             LogAllow &&
-              console.log(done ? "successfully created" : "not created");
+              console.log(allDone ? "successfully created" : "not created");
             // add to event history
             const _fileAction: TFileAction = {
               action: "create",
@@ -512,7 +512,7 @@ export const useNodeActionsHandler = () => {
         fb: () => {
           LogAllow && console.error("error while moving file system");
         },
-        cb: (allDone: boolean) => {
+        cb: (allDone: boolean|undefined) => {
           LogAllow &&
             console.log(
               allDone ? "all is successfully moved" : "some is not moved",

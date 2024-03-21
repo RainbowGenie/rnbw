@@ -2,7 +2,7 @@ import { useCallback, useEffect } from "react";
 
 import { CustomDirectoryPickerOptions } from "file-system-access/lib/showDirectoryPicker";
 import { delMany } from "idb-keyval";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import { LogAllow } from "@_constants/global";
@@ -24,7 +24,6 @@ import {
 import {
   NodeTree_Event_RedoActionType,
   NodeTree_Event_UndoActionType,
-  setExpandedNodeTreeNodes,
 } from "@_redux/main/nodeTree";
 import {
   setAutoSave,
@@ -39,11 +38,6 @@ import { getCommandKey } from "@_services/global";
 import { TCmdkKeyMap, TCmdkReferenceData } from "@_types/main";
 
 import { setSystemTheme } from "../helper";
-import { ActionCreators as UndoActionCreators } from "redux-undo";
-import {
-  getNeedToExpandNodeUids,
-  getValidNodeTree,
-} from "../processor/helpers";
 
 interface IUseCmdk {
   cmdkReferenceData: TCmdkReferenceData;
@@ -80,8 +74,6 @@ export const useCmdk = ({ cmdkReferenceData, importProject }: IUseCmdk) => {
     cmdkOpen,
     cmdkPages,
     currentCommand,
-    nodeTree,
-    lastNodesContents,
   } = useAppState();
 
   // handlers
@@ -168,24 +160,6 @@ export const useCmdk = ({ cmdkReferenceData, importProject }: IUseCmdk) => {
       } else {
         dispatch({ type: NodeTree_Event_UndoActionType });
       }
-
-      // const _validNodeTree = getValidNodeTree(nodeTree);
-      // const lastNodeUids = [];
-      // for (let uid in _validNodeTree) {
-      //   for (let lastNodeUid in lastNodesContents) {
-      //     if (
-      //       lastNodesContents[lastNodeUid] ==
-      //       _validNodeTree[uid].sequenceContent
-      //     ) {
-      //       lastNodeUids.push(uid);
-      //     }
-      //   }
-      // }
-      // const needToExpandItems = getNeedToExpandNodeUids(
-      //   _validNodeTree,
-      //   lastNodeUids,
-      // );
-      // dispatch(setExpandedNodeTreeNodes([...needToExpandItems]));
     }
 
     dispatch(setDidUndo(true));

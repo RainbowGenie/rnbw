@@ -34,11 +34,3 @@ export default function App() {
     );
   }, [nohostReady]);
 }
-
-// extend global interfaces for nohost
-declare global {
-  interface Window {
-    Filer: any;
-  }
-}
-window.Filer = window.Filer;

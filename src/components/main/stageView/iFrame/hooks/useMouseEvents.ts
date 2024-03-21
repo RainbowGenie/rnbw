@@ -1,6 +1,4 @@
 import { useCallback, useContext, useRef } from "react";
-
-import { debounce } from "lodash";
 import { useDispatch } from "react-redux";
 
 import { LogAllow } from "@_constants/global";
@@ -17,9 +15,11 @@ import { setActivePanel } from "@_redux/main/processor";
 import {
   editHtmlContent,
   getValidElementWithUid,
+  isChildrenHasWebComponents,
   selectAllText,
 } from "../helpers";
 import {
+  debounce,
   isWebComponentDblClicked,
   onWebComponentDblClick,
 } from "@_pages/main/helper";
@@ -47,6 +47,7 @@ export const useMouseEvents = ({
   const {
     fileTree,
     validNodeTree,
+    nodeTree,
     fExpandedItemsObj: expandedItemsObj,
     formatCode,
     htmlReferenceData,
@@ -55,14 +56,15 @@ export const useMouseEvents = ({
   const mostRecentClickedNodeUidRef = useRef<TNodeUid>(""); //This is used because dbl clikc event was not able to receive the uid of the node that was clicked
 
   // hoveredNodeUid
-  const onMouseEnter = useCallback((e: MouseEvent) => {}, []);
+  const onMouseEnter = useCallback(() => {}, []);
   const onMouseMove = useCallback((e: MouseEvent) => {
     const { uid } = getValidElementWithUid(e.target as HTMLElement);
     uid && dispatch(setHoveredNodeUid(uid));
   }, []);
-  const onMouseLeave = (e: MouseEvent) => {
+  const onMouseLeave = () => {
     dispatch(setHoveredNodeUid(""));
   };
+
   // click, dblclick handlers
   const onClick = useCallback((e: MouseEvent) => {
     dispatch(setActivePanel("stage"));
@@ -94,6 +96,7 @@ export const useMouseEvents = ({
             }
           }
         }
+
         !same && dispatch(setSelectedNodeUids(uids));
       })();
 
@@ -125,12 +128,6 @@ export const useMouseEvents = ({
           codeViewInstanceModel,
           formatCode,
         });
-
-        // dispatch(
-        //   setLastNodesContents(
-        //     validNodeTree[contentEditableUid].sequenceContent,
-        //   ),
-        // );
       }
     }
   }, []);
@@ -172,8 +169,9 @@ export const useMouseEvents = ({
         const nodeData = node.data as THtmlNodeData;
         console.log("nodeData", mostRecentClickedNodeUidRef.current);
 
-        if (["html", "head", "body", "img", "div"].includes(nodeData.name))
+        if (["html", "head", "body", "img", "div"].includes(nodeData.nodeName))
           return;
+        if (isChildrenHasWebComponents({ nodeTree, uid })) return;
 
         const { startTag, endTag } = nodeData.sourceCodeLocation;
         if (startTag && endTag && contentEditableUidRef.current !== uid) {
@@ -194,6 +192,7 @@ export const useMouseEvents = ({
       nodeTreeRef,
       validNodeTree,
       mostRecentClickedNodeUidRef.current,
+      nodeTree,
     ],
   );
 

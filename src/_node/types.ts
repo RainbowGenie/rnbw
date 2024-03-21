@@ -2,7 +2,6 @@ import { THtmlReferenceData } from "@_types/main";
 
 export type TNode = {
   uid: TNodeUid;
-  sequenceContent: TNodeUid;
   parentUid: TNodeUid | null;
 
   displayName: string;
@@ -15,6 +14,7 @@ export type TNode = {
 
 export type TNodeUid = string;
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type TNodeData = TBasicNodeData & { [propName: string]: any };
 
 export type TBasicNodeData = {

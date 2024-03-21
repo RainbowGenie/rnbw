@@ -1,3 +1,6 @@
+/* eslint-disable react/prop-types */
+//FIXME: This file is a temporary solution to use the Filer API in the browser.
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, {
   useCallback,
   useContext,
@@ -7,8 +10,6 @@ import React, {
   useState,
 } from "react";
 
-import cx from "classnames";
-import { debounce } from "lodash";
 import { useDispatch } from "react-redux";
 
 import { TreeView } from "@_components/common";
@@ -18,6 +19,7 @@ import { StageNodeIdAttr } from "@_node/file/handlers/constants";
 import { THtmlNodeData } from "@_node/index";
 import { TNode, TNodeUid } from "@_node/types";
 import {
+  debounce,
   isWebComponentDblClicked,
   onWebComponentDblClick,
   scrollToElement,
@@ -37,11 +39,14 @@ import { THtmlElementsReference } from "@_types/main";
 import { useCmdk } from "./hooks/useCmdk";
 import { useNodeTreeCallback } from "./hooks/useNodeTreeCallback";
 import { useNodeViewState } from "./hooks/useNodeViewState";
-import { Container } from "./nodeTreeComponents/Container";
 import { DragBetweenLine } from "./nodeTreeComponents/DragBetweenLine";
-import { ItemArrow } from "./nodeTreeComponents/ItemArrow";
-import { ItemTitle } from "./nodeTreeComponents/ItemTitle";
 import { NodeIcon } from "./nodeTreeComponents/NodeIcon";
+import {
+  ItemArrow,
+  ItemTitle,
+  Container,
+  TreeItem,
+} from "@_components/common/treeComponents";
 
 const AutoExpandDelayOnDnD = 1 * 1000;
 const dragAndDropConfig = {
@@ -185,7 +190,7 @@ const NodeTreeView = () => {
         width: "100%",
         height: "100%",
         overflow: "auto",
-        paddingBottom:"16px",
+        paddingBottom: "16px",
         maxHeight: "calc(100vh - 42px)",
       }}
       onClick={onPanelClick}
@@ -282,7 +287,7 @@ const NodeTreeView = () => {
               isDragging.current = true;
             };
 
-            const onDragEnter = (e: React.DragEvent) => {
+            const onDragEnter = () => {
               if (!props.context.isExpanded) {
                 setNextToExpand(props.item.index as TNodeUid);
                 debouncedExpand(props.item.index as TNodeUid);
@@ -290,70 +295,44 @@ const NodeTreeView = () => {
             };
 
             return (
-              <li
-                className={cx(
-                  props.context.isSelected && "background-secondary",
-
-                  props.context.isDraggingOver && "",
-                  props.context.isDraggingOverParent && "",
-
-                  props.context.isFocused && "",
-                )}
-                {...props.context.itemContainerWithChildrenProps}
-              >
-                <div
-                  key={`NodeTreeView-${props.item.index}${props.item.data.data.nodeName}`}
-                  id={`NodeTreeView-${props.item.index}`}
-                  className={cx(
-                    "justify-stretch",
-                    "padding-xs",
-                    "outline-default",
-
-                    props.context.isSelected &&
-                      "background-tertiary outline-none",
-                    !props.context.isSelected &&
-                      props.context.isFocused &&
-                      "outline",
-
-                    props.context.isDraggingOver && "outline",
-                    props.context.isDraggingOverParent && "",
-                  )}
-                  style={{
-                    flexWrap: "nowrap",
-                    paddingLeft: `${props.depth * 18}px`,
-                  }}
-                  {...props.context.itemContainerWithoutChildrenProps}
-                  {...props.context.interactiveElementProps}
-                  onClick={onClick}
-                  onDoubleClick={onDoubleClick}
-                  onMouseEnter={onMouseEnter}
-                  onMouseLeave={onMouseLeave}
-                  onFocus={() => {}}
-                  onDragStart={onDragStart}
-                  onDragEnter={onDragEnter}
-                >
-                  <div className="gap-s padding-xs" style={{ width: "100%" }}>
-                    {props.arrow}
-
-                    <NodeIcon
-                      {...{
-                        htmlElementReferenceData,
-                        nodeName: props.item.data.data.nodeName,
-                        componentTitle: props.title,
-                      }}
-                    />
-                  </div>
-                </div>
-
-                {props.context.isExpanded ? <div>{props.children}</div> : null}
-              </li>
+              <TreeItem
+                {...props}
+                key={`NodeTreeView-${props.item.index}${props.item.data.data.nodeName}`}
+                id={`NodeTreeView-${props.item.index}`}
+                eventHandlers={{
+                  onClick: onClick,
+                  onDoubleClick: onDoubleClick,
+                  onMouseEnter: onMouseEnter,
+                  onMouseLeave: onMouseLeave,
+                  onFocus: () => {},
+                  onDragStart: onDragStart,
+                  onDragEnter: onDragEnter,
+                }}
+                nodeIcon={
+                  <NodeIcon
+                    {...{
+                      htmlElementReferenceData,
+                      nodeName: props.item.data.data.nodeName,
+                      componentTitle: props.title,
+                    }}
+                  />
+                }
+              />
             );
           },
 
-          renderItemArrow: (props) => (
-            <ItemArrow {...props} addRunningActions={addRunningActions} />
-          ),
-          renderItemTitle: (props) => <ItemTitle {...props} />,
+          renderItemArrow: ({ item, context }) => {
+            const onClick = useCallback(() => {
+              addRunningActions(["nodeTreeView-arrow"]);
+              context.toggleExpandedState();
+            }, [context]);
+
+            return (
+              <ItemArrow item={item} context={context} onClick={onClick} />
+            );
+          },
+
+          renderItemTitle: ({ title }) => <ItemTitle title={title} />,
           renderDragBetweenLine: (props) => <DragBetweenLine {...props} />,
         }}
         props={{

@@ -14,7 +14,6 @@ import {
 } from "@_redux/main/fileTree";
 import { FileTree_Event_ClearActionType } from "@_redux/main/fileTree/event";
 import {
-  clearLastNodesContents,
   clearNodeTreeViewState,
   setNodeTree,
   setValidNodeTree,
@@ -25,6 +24,7 @@ import {
 } from "@_redux/main/nodeTree/event";
 import { setIframeSrc, setWebComponentOpen } from "@_redux/main/stageView";
 import {
+  TCmdkGroupData,
   TCmdkKeyMap,
   TCmdkReference,
   TCmdkReferenceData,
@@ -38,6 +38,7 @@ import {
   setActivePanel,
   setNavigatorDropdownType,
 } from "@_redux/main/processor";
+import { AnyFunction } from "./types";
 
 export const addDefaultCmdkActions = (
   cmdkReferenceData: TCmdkReferenceData,
@@ -123,7 +124,6 @@ export const clearProjectSession = (dispatch: Dispatch<AnyAction>) => {
   dispatch(setInitialFileUidToOpen(""));
   dispatch(setCurrentFileUid(""));
   dispatch(setPrevFileUid(""));
-  dispatch(clearLastNodesContents());
   dispatch(setPrevRenderableFileUid(""));
   dispatch(clearFileTreeViewState());
   dispatch({ type: FileTree_Event_ClearActionType });
@@ -174,7 +174,14 @@ export const fileCmdk = ({
   data,
   cmdkSearchContent,
   groupName,
-}: any) => {
+}: {
+  fileTree: TFileNodeTreeData;
+  fFocusedItem: TNodeUid;
+  filesRef: TFilesReference[];
+  data: TCmdkGroupData;
+  cmdkSearchContent: string;
+  groupName: string;
+}) => {
   const fileNode = fileTree[fFocusedItem];
   if (fileNode) {
     filesRef.map((fileRef: TFilesReference) => {
@@ -199,7 +206,7 @@ export const fileCmdk = ({
     });
   }
   data["Files"] = data["Files"].filter(
-    (element: any) => element.Featured || !!cmdkSearchContent,
+    (element: TCmdkReference) => element.Featured || !!cmdkSearchContent,
   );
   if (data["Files"].length === 0) {
     delete data["Files"];
@@ -211,9 +218,17 @@ export const elementsCmdk = ({
   htmlReferenceData,
   data,
   groupName,
-}: any) => {
+  isMove = false,
+}: {
+  nodeTree: TNodeTreeData;
+  nFocusedItem: TNodeUid;
+  htmlReferenceData: THtmlReferenceData;
+  data: TCmdkGroupData;
+  groupName: string;
+  isMove?: boolean;
+}) => {
   let flag = true;
-  for (let x in nodeTree) {
+  for (const x in nodeTree) {
     if (nodeTree[x].displayName === "html") {
       flag = false;
     }
@@ -223,7 +238,11 @@ export const elementsCmdk = ({
     const htmlNode = nodeTree[nFocusedItem];
     if (htmlNode && htmlNode.parentUid && htmlNode.parentUid !== RootNodeUid) {
       const parentNode = nodeTree[htmlNode.parentUid!];
-      const refData = htmlReferenceData.elements[parentNode.displayName];
+      const refData =
+        htmlReferenceData.elements[
+          isMove ? htmlNode.displayName : parentNode.displayName
+        ];
+
       if (refData) {
         if (refData.Contain === "All") {
           Object.keys(htmlReferenceData.elements).map((tag: string) => {
@@ -278,11 +297,12 @@ export const elementsCmdk = ({
         }
       }
     } else if (htmlNode?.displayName === "html") {
+      //@ts-expect-error - FIXME: fix this
       data["Elements"] = ["head", "body"];
     }
   } else {
     data["Elements"] = [];
-    let tagRef = htmlReferenceData.elements["html"];
+    const tagRef = htmlReferenceData.elements["html"];
     tagRef &&
       data["Elements"].push({
         Featured: tagRef && tagRef.Featured === "Yes" ? true : false,
@@ -338,7 +358,7 @@ export const onWebComponentDblClick = ({
   };
 }) => {
   let exist = false;
-  for (let x in fileTree) {
+  for (const x in fileTree) {
     const defineRegex = /customElements\.define\(\s*['"]([\w-]+)['"]/;
     if (
       (fileTree[x].data as TFileNodeData).content &&
@@ -352,7 +372,7 @@ export const onWebComponentDblClick = ({
         if (wcName === match[1].toLowerCase()) {
           const fileName = (fileTree[x].data as TFileNodeData).name;
           let src = "";
-          for (let i in validNodeTree) {
+          for (const i in validNodeTree) {
             if (
               (validNodeTree[i].data as THtmlNodeData).nodeName === "script"
             ) {
@@ -418,3 +438,17 @@ export const setSystemTheme = () => {
     document.documentElement.setAttribute("data-theme", "light");
   }
 };
+
+export function debounce<F extends AnyFunction>(
+  func: F,
+  wait: number,
+): (...args: Parameters<F>) => void {
+  let timeoutId: ReturnType<typeof setTimeout>;
+
+  return function debounced(...args: Parameters<F>) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      func(...args);
+    }, wait);
+  };
+}

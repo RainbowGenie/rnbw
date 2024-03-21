@@ -1,13 +1,20 @@
-import { Buffer } from "buffer";
+/* eslint-disable @typescript-eslint/no-var-requires */
+//FIXME: This file is a temporary solution to use the Filer API in the browser.
+/* eslint-disable @typescript-eslint/no-explicit-any */
+const Filer = require("filer");
 
-export const _fs = window.Filer.fs;
-export const _path = window.Filer.path;
+export const _fs = Filer.fs;
+export const _path = Filer.path;
 export const _sh = new _fs.Shell();
 
 export const _createIDBDirectory = async (path: string): Promise<void> => {
   return new Promise<void>((resolve, reject) => {
-    _fs.mkdir(path, (err: any) => {
-      err ? reject(err) : resolve();
+    _fs.exists(path, function (exists: any) {
+      if (!exists) {
+        _fs.mkdir(path, (err: any) => {
+          err ? reject(err) : resolve();
+        });
+      }
     });
   });
 };

@@ -11,10 +11,10 @@ import {
   unsavedProjectLightImg,
 } from "./constants";
 import { useFavicon, useNavigatorPanelHandlers } from "./hooks";
-import { NavigatorPanelProps } from "./types";
 import { PanelButton } from "./components/PanelButton";
+import { PanelHeader } from "@_components/common/panelHeader";
 
-export default function NavigatorPanel(props: NavigatorPanelProps) {
+export default function NavigatorPanel() {
   const {
     theme,
     navigatorDropdownType,
@@ -24,6 +24,7 @@ export default function NavigatorPanel(props: NavigatorPanelProps) {
     fileTree,
     currentFileUid,
     filesReferenceData,
+    showFilePanel,
   } = useAppState();
 
   const { importProject } = useContext(MainContext);
@@ -43,7 +44,7 @@ export default function NavigatorPanel(props: NavigatorPanelProps) {
   }, [fileTree]);
 
   useEffect(() => {
-    let link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
+    const link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
     if (link) {
       link.href = unsavedProject
         ? theme === "Light"
@@ -69,28 +70,26 @@ export default function NavigatorPanel(props: NavigatorPanelProps) {
   return useMemo(() => {
     return currentFileUid !== "" ? (
       <>
-        <div
+        <PanelHeader
           id="NavigatorPanel"
           className="border-bottom padding-m"
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
+          height="12px"
         >
-          <div className="gap-s" onClick={onPanelClick} ref={navigatorPanelRef}>
-            {!navigatorDropdownType ? (
-              <DefaultPanel />
-            ) : navigatorDropdownType === "workspace" ? (
-              <></>
-            ) : navigatorDropdownType === "project" ? (
+          <div
+            className="gap-s"
+            style={{ overflow: "hidden", width: "100%" }}
+            onClick={onPanelClick}
+            ref={navigatorPanelRef}
+          >
+            {showFilePanel ? (
               <ProjectPanel unsavedProject={unsavedProject} />
             ) : (
-              <></>
+              !navigatorDropdownType && <DefaultPanel />
             )}
           </div>
           <PanelButton />
-        </div>
+        </PanelHeader>
+
         {navigatorDropdownType && (
           <AdditionalPanel navigatorPanel={navigatorPanelRef.current} />
         )}
@@ -116,5 +115,6 @@ export default function NavigatorPanel(props: NavigatorPanelProps) {
     unsavedProject,
     theme,
     faviconFallback,
+    showFilePanel,
   ]);
 }

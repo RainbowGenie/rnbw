@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef } from "react";
 
 import morphdom from "morphdom";
 import { useDispatch } from "react-redux";
@@ -16,7 +16,10 @@ import { getNodeUidsFromPaths } from "@_node/helpers";
 import { TNodeUid } from "@_node/types";
 import { MainContext } from "@_redux/main";
 import { setCurrentCommand } from "@_redux/main/cmdk";
-import { setEditingNodeUidInCodeView } from "@_redux/main/codeView";
+import {
+  setCodeErrors,
+  setEditingNodeUidInCodeView,
+} from "@_redux/main/codeView";
 import {
   setDoingFileAction,
   setFileTreeNodes,
@@ -28,7 +31,6 @@ import {
   focusNodeTreeNode,
   selectNodeTreeNodes,
   setExpandedNodeTreeNodes,
-  setLastNodesContents,
   setNeedToSelectCode,
   setNeedToSelectNodePaths,
   setNeedToSelectNodeUids,
@@ -47,7 +49,7 @@ import {
   markChangedFolders,
 } from "../helpers";
 import { setLoadingFalse, setLoadingTrue } from "@_redux/main/processor";
-import { RootNodeUid } from "@_constants/main";
+import { toast } from "react-toastify";
 
 export const useNodeTreeEvent = () => {
   const dispatch = useDispatch();
@@ -67,7 +69,6 @@ export const useNodeTreeEvent = () => {
     needToSelectCode,
     nExpandedItems,
     nFocusedItem,
-    lastNodesContents,
     syncConfigs,
     webComponentOpen,
   } = useAppState();
@@ -76,6 +77,8 @@ export const useNodeTreeEvent = () => {
 
   const isSelectedNodeUidsChanged = useRef(false);
   const isCurrentFileContentChanged = useRef(false);
+  const isCodeErrorsExist = useRef(false);
+
   useEffect(() => {
     isSelectedNodeUidsChanged.current = false;
     isCurrentFileContentChanged.current = false;
@@ -95,12 +98,6 @@ export const useNodeTreeEvent = () => {
     dispatch(selectNodeTreeNodes(selectedNodeUids));
   }, [selectedNodeUids]);
 
-  const getSubString = (content: string): string => {
-    const startIndex = content.indexOf("<");
-    const endIndex = content.indexOf(">", startIndex);
-    const substring = content.substring(startIndex, endIndex + 1);
-    return substring;
-  };
   useEffect(() => {
     isCurrentFileContentChanged.current = true;
     // validate
@@ -143,7 +140,9 @@ export const useNodeTreeEvent = () => {
         if (fileData.ext === "html") {
           dispatch(setIframeSrc(`rnbw${previewPath}`));
         }
-      } catch (err) {}
+      } catch (err) {
+        LogAllow && console.error(err);
+      }
       dispatch(setDoingFileAction(false));
       dispatch(setLoadingFalse());
     })();
@@ -159,94 +158,94 @@ export const useNodeTreeEvent = () => {
     } else {
       // dom-diff using morph
       if (fileData.ext === "html") {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const iframe: any = document.getElementById("iframeId");
         if (iframe) {
           const iframeDoc = iframe.contentDocument;
           const iframeHtml = iframeDoc.getElementsByTagName("html")[0];
           const updatedHtml = contentInApp;
           if (!iframeHtml || !updatedHtml) return;
+          try {
+            morphdom(iframeHtml, updatedHtml, {
+              onBeforeElUpdated: function (fromEl, toEl) {
+                //check if the node is script or style
+                if (
+                  fromEl.nodeName === "SCRIPT" ||
+                  fromEl.nodeName === "LINK" ||
+                  fromEl.nodeName === "STYLE"
+                ) {
+                  return false;
+                }
+                const fromElRnbwId = fromEl.getAttribute(StageNodeIdAttr);
 
-          morphdom(iframeHtml, updatedHtml, {
-            onBeforeElUpdated: function (fromEl, toEl) {
-              //check if the node is script or style
-              if (
-                fromEl.nodeName === "SCRIPT" ||
-                fromEl.nodeName === "LINK" ||
-                fromEl.nodeName === "STYLE"
-              ) {
-                return false;
-              }
-              const fromElRnbwId = fromEl.getAttribute(StageNodeIdAttr);
-
-              if (toEl.nodeName.includes("-")) return false;
-              if (
-                syncConfigs?.matchIds &&
-                !!fromElRnbwId &&
-                syncConfigs.matchIds.includes(fromElRnbwId)
-              ) {
+                if (toEl.nodeName.includes("-")) return false;
+                if (
+                  syncConfigs?.matchIds &&
+                  !!fromElRnbwId &&
+                  syncConfigs.matchIds.includes(fromElRnbwId)
+                ) {
+                  return true;
+                } else if (fromEl.isEqualNode(toEl)) {
+                  return false;
+                } else if (toEl.nodeName === "HTML") {
+                  //copy the attributes
+                  for (let i = 0; i < fromEl.attributes.length; i++) {
+                    toEl.setAttribute(
+                      fromEl.attributes[i].name,
+                      fromEl.attributes[i].value,
+                    );
+                  }
+                  if (fromEl.isEqualNode(toEl)) return false;
+                }
                 return true;
-              } else if (fromEl.isEqualNode(toEl)) {
-                return false;
-              } else if (toEl.nodeName === "HTML") {
-                //copy the attributes
-                for (let i = 0; i < fromEl.attributes.length; i++) {
-                  toEl.setAttribute(
-                    fromEl.attributes[i].name,
-                    fromEl.attributes[i].value,
-                  );
+              },
+              onElUpdated: function (el) {
+                if (el.nodeName === "HTML") {
+                  //copy the attributes
+                  for (let i = 0; i < el.attributes.length; i++) {
+                    iframeHtml.setAttribute(
+                      el.attributes[i].name,
+                      el.attributes[i].value,
+                    );
+                  }
                 }
-                if (fromEl.isEqualNode(toEl)) return false;
-              }
-              return true;
-            },
-            onElUpdated: function (el) {
-              if (el.nodeName === "HTML") {
-                //copy the attributes
-                for (let i = 0; i < el.attributes.length; i++) {
-                  iframeHtml.setAttribute(
-                    el.attributes[i].name,
-                    el.attributes[i].value,
-                  );
+              },
+              onBeforeNodeDiscarded: function (node: Node) {
+                const elementNode = node as Element;
+                const ifPreserveNode = elementNode.getAttribute
+                  ? elementNode.getAttribute(PreserveRnbwNode)
+                  : false;
+                if (ifPreserveNode) {
+                  return false;
                 }
-              }
-            },
-            onBeforeNodeDiscarded: function (node: Node) {
-              const elementNode = node as Element;
-              const ifPreserveNode = elementNode.getAttribute
-                ? elementNode.getAttribute(PreserveRnbwNode)
-                : false;
-              if (ifPreserveNode) {
-                return false;
-              }
-              // script and style should not be discarded
-              if (
-                elementNode.nodeName === "SCRIPT" ||
-                elementNode.nodeName === "LINK" ||
-                elementNode.nodeName === "STYLE"
-              ) {
-                return false;
-              }
+                // script and style should not be discarded
+                if (
+                  elementNode.nodeName === "SCRIPT" ||
+                  elementNode.nodeName === "LINK" ||
+                  elementNode.nodeName === "STYLE"
+                ) {
+                  return false;
+                }
 
-              return true;
-            },
-          });
+                return true;
+              },
+            });
+            isCodeErrorsExist.current = false;
+          } catch (err) {
+            isCodeErrorsExist.current = true;
+
+            toast("Some changes in the code are incorrect", {
+              type: "error",
+              toastId: "Some changes in the code are incorrect",
+            });
+            console.error(err, "error");
+          }
         }
       }
     }
+    dispatch(setCodeErrors(isCodeErrorsExist.current));
+    if (isCodeErrorsExist.current) return;
 
-    // if (validNodeTree[selectedNodeUids[0]]) {
-    //   const parentUid = validNodeTree[selectedNodeUids[0]].parentUid
-    //     ? validNodeTree[selectedNodeUids[0]].parentUid
-    //     : RootNodeUid;
-    //   const selectedNodeSequenceContent =
-    //     validNodeTree[selectedNodeUids[0]].sequenceContent;
-    //   const parentNodeSequenceContent =
-    //     validNodeTree[parentUid!].sequenceContent;
-    //   setNewSequenceContent(
-    //     parentNodeSequenceContent.replace(selectedNodeSequenceContent, ""),
-    //   );
-    //   dispatch(setLastNodesContents(newSequenceContent));
-    // }
     // sync node-tree
     dispatch(setNodeTree(nodeTree));
     const _validNodeTree = getValidNodeTree(nodeTree);
@@ -276,29 +275,16 @@ export const useNodeTreeEvent = () => {
       const validExpandedItems = nExpandedItems.filter(
         (uid) => _validNodeTree[uid] && _validNodeTree[uid].isEntity === false,
       );
-      // const needToExpandItems: TNodeUid[] = isSelectedNodeUidsChanged.current
-      //   ? getNeedToExpandNodeUids(_validNodeTree, selectedNodeUids)
-      //   : [];
-      // console.log("TreeView-lastNodesContents", lastNodesContents);
-      const lastNodeUids = [];
-      for (let uid in _validNodeTree) {
-        for (let lastNodeUid in lastNodesContents) {
-          if (
-            lastNodesContents[lastNodeUid] ==
-            _validNodeTree[uid].sequenceContent
-          ) {
-            lastNodeUids.push(uid);
-          }
-        }
-      }
-      const needToExpandItems = getNeedToExpandNodeUids(
-        _validNodeTree,
-        lastNodeUids,
+      const needToExpandItems: TNodeUid[] = isSelectedNodeUidsChanged.current
+        ? getNeedToExpandNodeUids(_validNodeTree, selectedNodeUids)
+        : [];
+      dispatch(
+        setExpandedNodeTreeNodes([...validExpandedItems, ...needToExpandItems]),
       );
-      dispatch(setExpandedNodeTreeNodes([...needToExpandItems]));
+
       if (!isSelectedNodeUidsChanged.current) {
         // this change is from 'node actions' or 'typing in code-view'
-        let _selectedNodeUids: TNodeUid[] = [];
+        const _selectedNodeUids: TNodeUid[] = [];
 
         if (needToSelectNodePaths) {
           LogAllow && console.log("it's a rnbw-change from node-actions");

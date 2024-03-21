@@ -60,6 +60,7 @@ export const sortUidsByMinStartIndex = (
     return start1 - start2; // Sort in descending order
   });
 };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getCopiedContent = (uid: TNodeUid, iframe: any) => {
   const ele = iframe?.contentWindow?.document?.querySelector(
     `[${StageNodeIdAttr}="${uid}"]`,
@@ -176,12 +177,14 @@ export const isPastingAllowed = ({
   htmlReferenceData,
   nodeToAdd,
   validNodeTree,
+  isMove = false,
 }: {
   selectedItems: TNodeUid[];
   nodeTree: TNodeTreeData;
   htmlReferenceData: THtmlReferenceData;
   nodeToAdd: string[];
   validNodeTree: TNodeTreeData;
+  isMove?: boolean;
 }) => {
   const selectedUids = [...selectedItems];
   const selectedNodes = selectedItems.map((uid) => validNodeTree[uid]);
@@ -199,6 +202,7 @@ export const isPastingAllowed = ({
       htmlReferenceData,
       data,
       groupName: "Add",
+      isMove,
     });
 
     const targetNode = nodeTree[uid];
@@ -208,8 +212,11 @@ export const isPastingAllowed = ({
     return nodeToAdd.every((node: string) => {
       if (node.split("-").length > 2) {
         return (
-          htmlReferenceData?.elements[nodeTree[parentTarget]?.displayName]
-            ?.Contain === "All"
+          htmlReferenceData?.elements[
+            isMove
+              ? nodeTree[uid]?.displayName
+              : nodeTree[parentTarget]?.displayName
+          ]?.Contain === "All"
         );
       } else {
         return Object.values(data["Elements"]).some(
@@ -218,12 +225,15 @@ export const isPastingAllowed = ({
       }
     });
   };
+  let skipPosition;
 
   const allowedArray = selectedNodes.map((selectedNode: TNode, i: number) => {
     let addingAllowed =
       (selectedNode.displayName == "body" &&
         selectedNode.children.length == 0) ||
       checkAddingAllowed(selectedNode.uid);
+    skipPosition = !addingAllowed;
+
     if (
       !addingAllowed &&
       selectedNode?.parentUid &&
@@ -235,5 +245,9 @@ export const isPastingAllowed = ({
     return addingAllowed;
   });
 
-  return { isAllowed: !allowedArray.includes(false), selectedUids };
+  return {
+    isAllowed: !allowedArray.includes(false),
+    selectedUids,
+    skipPosition,
+  };
 };
